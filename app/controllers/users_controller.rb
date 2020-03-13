@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   before_action :set_one_month, only: :show
 
   def index
-    @users = User.paginate(page: params[:page])
+    @users = query_params.order(:id).page(params[:page])
   end
 
   def show
@@ -70,6 +70,14 @@ class UsersController < ApplicationController
     
     def user_search_params
       params.require(:user).permit(:name)
+    end
+    
+    def query_params
+      if params[:user].present? && params[:user][:name]
+        User.where('LOWER(name) LIKE ?', "%#{params[:user][:name].downcase}%")
+      else
+        User.all
+      end
     end
 end
 

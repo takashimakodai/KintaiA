@@ -1,13 +1,16 @@
 <% provide(:title, 'All Users') %>
-<h1>全てのユーザー</h1>
-<h1>検索結果</h1>
+
+<% if params[:user] %>
+  <h1>検索結果</h1>
+<% else %>
+  <h1>全てのユーザー</h1>
+<% end %>
 
 <div class="col-md-offset-8 col-md-3">
-  
-  <%= form_with(scope: :search, url: users_path, method: :get, local: true) do |f| %>
-    <%= f.label :name, "ユーザー名検索" %>
-    <div class= "input-group">
-    <%= f.text_field :name, placeholder: "キーワードを入力...", class: "form-control" %>
+  <%= form_with model: User.new, method: :get, local: true do |f| %>
+    <%= f.label "ユーザー名検索" %><br>
+    <div class="input-group">
+    <%= f.text_field :name, value: (params[:user][:name] if params[:user]), placeholder: "キーワード入力...", class: "form-control" %>
     <span class="input-group-btn">
     <%= f.submit "検索", class: "btn btn-primary" %>
     </span>
@@ -33,6 +36,5 @@
   </table>
   <%= will_paginate %>
 </div>
-
 <!--モーダルウインドウ表示-->
 <div id="edit-basic-info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
