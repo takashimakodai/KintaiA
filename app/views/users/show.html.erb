@@ -8,7 +8,7 @@
         <%= link_to "→", user_path(date: @first_day.next_month), class: "btn btn-xs btn-primary" %>
       </td>
       <td>指定勤務時間：<%= format_basic_info(@user.work_time) %></td>
-      <td colspan="2">基本時間：<%= format_basic_info(@user.basic_time) %></td>
+      <td colspan="2">基本勤務時間：<%= format_basic_info(@user.basic_time) %></td>
       <td>初日：<%= l(@first_day, format: :short) %></td>
     </tr>
     <tr>
