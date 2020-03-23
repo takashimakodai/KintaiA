@@ -63,6 +63,16 @@ p {
   font-weight: bold;
 }
 
+.logo_name {
+  float: left;
+  margin-left: 20px;
+  font-size: 1.3em;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  padding-top: 12px;
+}
+
 #logo:hover {
   color: #fff;
   text-decoration: none;

@@ -5,6 +5,7 @@
     <table class="table table-bordered table-condensed table-hover" id="table-attendances">
       <thead>
         <tr>
+          <th>残業申請</th>
           <th>日付</th>
           <th>曜日</th>
           <th>出勤時間</th>
@@ -17,6 +18,7 @@
         <% @attendances.each do |day| %>
           <%= f.fields_for "attendances[]", day do |attendance| %>
             <tr>
+              <td><%= link_to "残業申請", "#", class: "btn btn-primary" %></td>
               <td><%= l(day.worked_on, format: :short) %></td>
               <td>
                 <% if day.worked_on.wday == 0 %>
