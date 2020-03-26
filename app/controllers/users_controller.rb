@@ -58,6 +58,13 @@ class UsersController < ApplicationController
     end
     redirect_to users_url
   end
+  
+   # 出勤社員一覧
+  def currently_working
+    @user = User.all
+  end
+  
+  
 
   private
 

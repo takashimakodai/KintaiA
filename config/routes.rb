@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   root 'static_pages#top'
-  get '/top_admin', to: 'static_pages#top_admin'
   get '/signup', to: 'users#new'
+  #　追加管理機能
+  get '/currently_working', to: 'users#currently_working'
+  get '/basic_information', to: 'users#basic_information'
 
   # ログイン機能
   get    '/login', to: 'sessions#new'
