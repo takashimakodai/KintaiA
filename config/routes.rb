@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   #　追加管理機能
   get '/currently_working', to: 'users#currently_working'
   get '/basic_information', to: 'users#basic_information'
+  
+  # 拠点機能
+  get 'bases/index'
+  get 'bases/new'
 
   # ログイン機能
   get    '/login', to: 'sessions#new'
