@@ -4,8 +4,10 @@ Rails.application.routes.draw do
   #　追加管理機能
   get '/currently_working', to: 'users#currently_working'
   get '/basic_information', to: 'users#basic_information'
-   # 拠点機能
   
+  # 拠点機能
+  get '/bases_index', to: 'bases#index'
+  get '/bases_new', to: 'bases#new'
   
   # ログイン機能
   get    '/login', to: 'sessions#new'
@@ -22,5 +24,4 @@ Rails.application.routes.draw do
     resources :attendances, only: :update # この行を追加します。
   end
   
-  resources :bases
 end
