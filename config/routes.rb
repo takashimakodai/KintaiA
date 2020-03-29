@@ -6,8 +6,7 @@ Rails.application.routes.draw do
   get '/basic_information', to: 'users#basic_information'
   
   # 拠点機能
-  get '/bases_index', to: 'bases#index'
-  get '/bases_new', to: 'bases#new'
+  resources :bases
   
   # ログイン機能
   get    '/login', to: 'sessions#new'
@@ -21,7 +20,7 @@ Rails.application.routes.draw do
       get 'attendances/edit_one_month'
       patch 'attendances/update_one_month'
     end
-    resources :attendances, only: :update # この行を追加します。
+    resources :attendances, only: :update 
   end
   
 end
