@@ -5,7 +5,6 @@ class BasesController < ApplicationController
   end
   
   def show
-    @base = Base.find(params[:id])
   end
   
   def new
@@ -23,6 +22,7 @@ class BasesController < ApplicationController
   end
   
   def edit
+    @base = Base.find(params[:id])
   end
   
   def update
