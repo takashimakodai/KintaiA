@@ -15,9 +15,10 @@ class BasesController < ApplicationController
   def create
     @base = User.new(params[:base_params])
     if @base.save
-      
+      flash[:success] = '登録に成功しました。'
+      redirect_to @base
     else
-      render :new
+      redirect_to new
     end
   end
   
@@ -33,6 +34,6 @@ class BasesController < ApplicationController
   private
   
     def base_params
-      params.require(:base).permit(:base_number, :base_name, :base_category)
+      params.require(:base).permit(:base_number, :base_name, :base_category, :user_id)
     end  
 end
