@@ -47,8 +47,14 @@
 /* ユーザー一覧ページ */
 
 #table-users {
+  border-top: none;
+  tr {
+    text-decoration: none;  
+  }
+  
   td {
-    vertical-align: middle;
+    padding-top: 10px;
+    font-size: 1.3em;
   }  
 }
 
@@ -92,5 +98,15 @@
   p {
   line-height: 12px;
   }
+}
+
+.btn-edit-user {
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.btn-csv {
+  margin-top: 15px;
+  margin-bottom: 10px;
 }
 

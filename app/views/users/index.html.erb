@@ -1,30 +1,30 @@
-<% provide(:title, 'All Users') %>
+<% provide(:title, 'ユーザー一覧') %>
+<h1>ユーザー一覧</h1>
 
-
-  <h1>ユーザー一覧</h1>
-
-<div class="col-md-offset-8 col-md-3">
+<div class="col-md-offset-1 col-md-4">
   <%= form_with model: User.new, method: :get, local: true do |f| %>
     <div class="input-group">
-    <%= f.text_field :name, value: (params[:user][:name] if params[:user]), class: "form-control" %>
-    <span class="input-group-btn">
-    <%= f.submit "ファイルを選択", class: "btn btn-primary" %>
-    </span>
-    
+      <span class="input-group-btn">
+        <%= f.submit "ファイルを選択", class: "btn btn-default" %>
+      </span>
+      <%= f.text_field :name, value: (params[:user][:name] if params[:user]), class: "form-control" %>
     </div>
-    <p><%= f.submit "CSVをインポート", class: "btn btn-lg btn-primary" %></p>
+      <%= f.submit "CSVインポート", class: "btn btn-block btn-primary btn-csv" %>
   <% end %>
 </div>
 
 <div class="col-md-10 col-md-offset-1">
- <table class="table table-condensed table-hover" id="table-users">
+ <table class="table table-condensed" id="table-users">
     <% @users.each do |user| %>
-        <td><%= link_to user.name, user %></td>
-        <td>
-          <%= link_to "削除", user, method: :delete,data: { confirm: "削除してよろしいですか？" }, class: "btn btn-primary" %>
-         <tr> 
-          <td><%= link_to "編集", edit_user_path(user), remote: true, class: "btn btn-primary" %></td>
-         </tr> 
-          <% end %>
-        </td>
+      <tr>
+        <td><%= user.name %></td>
+      </tr>
+      <tr>
+        <td><%= link_to "削除", user, method: :delete,data: { confirm: "削除してよろしいですか？" }, class: "btn btn-primary" %></td>
+      </tr>
+      <tr> 
+        <td><%= link_to "編集", edit_user_path(user), remote: true, class: "btn btn-lg btn-primary btn-edit-user" %></td>
+      </tr> 
+    <% end %>
   </table>
+</div>

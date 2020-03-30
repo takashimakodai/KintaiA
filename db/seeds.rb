@@ -28,6 +28,16 @@ User.create!(name: "一般B",
              password: "password",
              password_confirmation: "password")
 
+Base.create!(base_number: "1",
+             base_name: "東京",
+             base_category: "新宿",
+             user_id: "1")
+             
+Base.create!(base_number: "2",
+             base_name: "沖縄",
+             base_category: "那覇",
+             user_id: "1")
+
 
 
 

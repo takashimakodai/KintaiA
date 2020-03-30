@@ -3,7 +3,7 @@
 
 <div>
   <table class="table table-bordered table-striped table-condensed base-table">
-    <% @bases.each do |base| %>
+    <thead>
       <tr>
         <th></th>
         <th></th>
@@ -11,16 +11,21 @@
         <th>拠点名</th>
         <th>拠点種類</th>
       </tr>
-      <tr>
-        <td class="col-xs-1"><%= link_to "修正", edit_basis_path(base), class: "btn btn-primary" %></td>
-        <td class="col-xs-1"><%= link_to "削除", basis_path(base), method: :delete,  class: "btn btn-primary" %></td>
-        <td><%= base.base_number %></td>
-        <td><%= base.base_name %></td>
-        <td><%= base.base_category %></td>
-        
-      <tr>
-        <td colspan="5"><%= link_to "拠点追加", new_basis_path, class: "btn btn-primary btn-base" %></td>
-      </tr>
-    <% end %>
+    </thead>
+    
+    <tbady>
+      <% @bases.each do |base| %>
+        <tr>
+          <td class="col-xs-1"><%= link_to "修正", edit_basis_path(base), class: "btn btn-primary" %></td>
+          <td class="col-xs-1"><%= link_to "削除", basis_path(base), method: :delete,  class: "btn btn-primary" %></td>
+          <td class="base-cell"><%= base.base_number %></td>
+          <td class="base-cell"><%= base.base_name %></td>
+          <td class="base-cell"><%= base.base_category %></td>
+        </tr>
+      <% end %> 
+        <tr>
+          <td colspan="5"><%= link_to "拠点追加", new_basis_path, class: "btn btn-primary btn-base" %></td>
+        </tr>
+    </tbady>
   </table>
 </div>
