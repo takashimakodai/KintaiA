@@ -1,21 +1,10 @@
 <% provide(:title, "拠点編集") %>
+<% provide(:button_text, "保存") %>
 
 <h1>拠点情報編集</h1>
 
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
-    <%= form_with(model: @base, local: true) do |f| %>
-    
-      <%= f.label :base_number, class: "label-base" %>
-      <%= f.text_field :base_number, class: "form-control" %>
-      
-      <%= f.label :base_name, class: "label-base" %>
-      <%= f.text_field :base_name, class: "form-control" %>
-      
-      <%= f.label :base_category, class: "label-base" %>
-      <%= f.text_field :base_category, class: "form-control" %>
-      
-      <%= f.submit "編集", class: "btn btn-block btn-primary btn-new-base" %>
-    <% end %> 
+    <%= render 'form' %>
   </div>
 </div>

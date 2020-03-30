@@ -64,8 +64,6 @@ class UsersController < ApplicationController
     @user = User.all
   end
   
-  
-  
    # 出勤社員一覧
   def currently_working
     @user = User.all

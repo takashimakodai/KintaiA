@@ -13,7 +13,7 @@
       </tr>
       <tr>
         <td class="col-xs-1"><%= link_to "修正", edit_basis_path(base), class: "btn btn-primary" %></td>
-        <td class="col-xs-1"><%= link_to "削除", "#", class: "btn btn-primary" %></td>
+        <td class="col-xs-1"><%= link_to "削除", basis_path(base), method: :delete,  class: "btn btn-primary" %></td>
         <td><%= base.base_number %></td>
         <td><%= base.base_name %></td>
         <td><%= base.base_category %></td>

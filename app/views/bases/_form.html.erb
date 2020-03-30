@@ -1,0 +1,13 @@
+<%= form_with(model: @base, local: true) do |f| %>
+
+  <%= f.label :base_number, class: "label-base" %>
+  <%= f.text_field :base_number, class: "form-control" %>
+  
+  <%= f.label :base_name, class: "label-base" %>
+  <%= f.text_field :base_name, class: "form-control" %>
+  
+  <%= f.label :base_category, class: "label-base" %>
+  <%= f.text_field :base_category, class: "form-control" %>
+  
+  <%= f.submit yield(:button_text), class: "btn btn-block btn-primary btn-new-base" %>
+<% end %> 
