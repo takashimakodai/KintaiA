@@ -110,3 +110,19 @@
   margin-bottom: 10px;
 }
 
+/* 勤怠変更申請 */
+.change-attendance {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.change-attendance-show {
+  color: red;
+  border: double 3px;
+}
+
+.change-attendance-show:hover {
+  color: red;
+  background-color: #FAFAD2;
+}
+
