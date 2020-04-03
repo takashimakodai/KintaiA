@@ -33,7 +33,8 @@ class AttendancesController < ApplicationController
   def edit_overtime_info
     @user = User.find(params[:user_id])
     @attendance = Attendance.find(params[:id])
-    @days = @user.find(params[:date])
+    @first_day = Date.current.beginning_of_month
+    @last_day = @first_day.end_of_month
   end
   
     

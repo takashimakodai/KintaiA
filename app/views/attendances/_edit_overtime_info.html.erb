@@ -23,9 +23,18 @@
            </thead>
            
            <tbady>
+             <% (@first_day..@last_day).each do |day| %>
              <tr>
-               <td><%#= @date %></td>
-               <td><%#= @weekday %></td>
+               <td><%= day %></td>
+               <td>
+                 <% if day.wday == 0 %>
+                  <div class="sunday"><%= $days_of_the_week[day.wday] %></div>
+                <% elsif day.wday == 6 %>
+                  <div class="saturday"><%= $days_of_the_week[day.wday] %></div>
+                <% else %>
+                  <%= $days_of_the_week[day.wday] %>
+                <% end %>
+               </td>
                <td><%= f.time_field :end_time, class: "form-control" %></td>
                <td><%= f.check_box :next_day, id: "remember_me" %></td>
                <td><%= f.text_field :business, class: "form-control" %></td>
@@ -33,6 +42,7 @@
              </tr>
            </tbady>
            <% end %>
+         <% end %>
         </div>
       </div>
     </div>
