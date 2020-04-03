@@ -7,7 +7,7 @@
       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
-      <h1 class="modal-title">基本情報編集</h1>
+      <h1 class="modal-title">残業申請</h1>
     </div>
     <div class="modal-body">
       <div class="row">
@@ -15,13 +15,13 @@
           <%= form_with(model: @user, url: update_basic_info_user_path(@user), local: true, method: :patch) do |f| %>
             <%= render 'shared/error_messages', object: @user %>
 
-            <%= f.label :name, class: "label-#{yield(:class_text)}" %>
+            <%= f.label :name, class: "label-overwork" %>
             <p><%= @user.name %></p>
             
-            <%= f.label :work_time, class: "label-#{yield(:class_text)}" %>
+            <%= f.label :work_time, class: "label-overwork" %>
             <%= f.time_field :work_time, class: "form-control" %>
 
-            <%= f.label :basic_time, class: "label-#{yield(:class_text)}" %>
+            <%= f.label :basic_time, class: "label-overwork" %>
             <%= f.time_field :basic_time, class: "form-control" %>
 
             <div class="center">

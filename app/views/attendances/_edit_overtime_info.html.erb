@@ -1,0 +1,41 @@
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h1 class="modal-title">【残業申請】</h1>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-12">
+        <table class="table table-bordered table-striped table-condensed overwork-table">
+          <%= form_with(model: @attendance, url: user_attendances_path, local: true) do |f| %>
+          <thead class="overwork-table">
+            <tr>
+              <th>日付</th>
+              <th>曜日</th>
+              <th>終了予定時間</th>
+              <th>翌日</th>
+              <th>業務処理内容</th>
+              <th>指示者確認㊞</th>
+            </tr>
+           </thead>
+           
+           <tbady>
+             <tr>
+               <td><%#= @date %></td>
+               <td><%#= @weekday %></td>
+               <td><%= f.time_field :end_time, class: "form-control" %></td>
+               <td><%= f.check_box :next_day, id: "remember_me" %></td>
+               <td><%= f.text_field :business, class: "form-control" %></td>
+               <td><%= f.select :confirmation_mark, [["選択して下さい"],["上長A"],["上長B"]] %></td>
+             </tr>
+           </tbady>
+           <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

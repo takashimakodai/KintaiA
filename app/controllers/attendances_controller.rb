@@ -28,6 +28,15 @@ class AttendancesController < ApplicationController
 
   def edit_one_month
   end
+  
+  # 残業申請
+  def edit_overtime_info
+    @user = User.find(params[:user_id])
+    @attendance = Attendance.find(params[:id])
+    @days = @user.find(params[:date])
+  end
+  
+    
 
   def update_one_month
     ActiveRecord::Base.transaction do # トランザクションを開始します。
