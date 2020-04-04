@@ -17,12 +17,8 @@ Rails.application.routes.draw do
     member do
       get 'attendances/edit_one_month'
       patch 'attendances/update_one_month'
+      get 'attendances/edit_overtime_info'
     end
-    # 残業申請
-    resources :attendances do
-      member do
-        get 'edit_overtime_info'
-      end
-    end
+    resources :attendances, only: :update 
   end
 end

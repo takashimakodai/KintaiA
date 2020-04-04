@@ -1,5 +1,5 @@
 class AttendancesController < ApplicationController
-  before_action :set_user, only: [:edit_one_month, :update_one_month]
+  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_info]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
   before_action :set_one_month, only: :edit_one_month
@@ -31,13 +31,9 @@ class AttendancesController < ApplicationController
   
   # 残業申請
   def edit_overtime_info
-    @user = User.find(params[:user_id])
-    @attendance = Attendance.find(params[:id])
-    @first_day = Date.current.beginning_of_month
-    @last_day = @first_day.end_of_month
+    @user = User.find(params[:id])
+    @attendance = Attendance.find_by(worked_on: params[:date])
   end
-  
-    
 
   def update_one_month
     ActiveRecord::Base.transaction do # トランザクションを開始します。
