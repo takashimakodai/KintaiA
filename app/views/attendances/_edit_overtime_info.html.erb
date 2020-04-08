@@ -10,7 +10,7 @@
       <div class="row">
         <div class="col-md-12">
         <table class="table table-bordered table-striped table-condensed overwork-table">
-          <%= form_with(model: @attendance,url: attendances_request_overtime_user_path(@attendance), local: true) do |f| %>
+          <%= form_with(model: @attendance, url: attendances_request_overtime_user_path(@attendance), local: true, method: :pacth) do |f| %>
           <thead class="overwork-table">
             <tr>
               <th>日付</th>

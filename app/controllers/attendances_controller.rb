@@ -1,5 +1,5 @@
 class AttendancesController < ApplicationController
-  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_info]
+  before_action :set_user, only: [:edit_one_month, :update_one_month]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
   before_action :set_one_month, only: :edit_one_month
@@ -38,6 +38,7 @@ class AttendancesController < ApplicationController
     @attendance = Attendance.find(params[:id])
     if @attendance.update_attributes(overtime_params)
     end
+    redirect_to @user
   end
 
   def update_one_month
@@ -62,7 +63,7 @@ class AttendancesController < ApplicationController
     end
     
     def overtime_params
-      params.require(:user).permit(attedances: [:overtime_at, :worked_contents])[:attendances]
+      params.require(:user).permit(attedances: [:overtime_at, :worked_contents])
     end
 
     # beforeフィルター
