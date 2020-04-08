@@ -36,6 +36,8 @@ class AttendancesController < ApplicationController
   
   def request_overtime
     @attendance = Attendance.find(params[:id])
+    if @attendance.update_attributes(overtime_params)
+    end
   end
 
   def update_one_month
@@ -57,6 +59,10 @@ class AttendancesController < ApplicationController
     # 1ヶ月分の勤怠情報を扱います。
     def attendances_params
       params.require(:user).permit(attendances: [:started_at, :finished_at, :note])[:attendances]
+    end
+    
+    def overtime_params
+      params.require(:user).permit(attedances: [:overtime_at, :worked_contents])[:attendances]
     end
 
     # beforeフィルター
