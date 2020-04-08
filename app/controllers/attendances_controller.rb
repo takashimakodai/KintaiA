@@ -31,8 +31,11 @@ class AttendancesController < ApplicationController
   
   # 残業申請
   def edit_overtime_info
-    @user = User.find(params[:id])
     @attendance = Attendance.find_by(worked_on: params[:date])
+  end
+  
+  def request_overtime
+    @attendance = Attendance.find(params[:id])
   end
 
   def update_one_month
