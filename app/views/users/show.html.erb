@@ -99,7 +99,7 @@
                 <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-block btn-primary" %>
               <% end %>
             </td>
-            <td><%= l(day.finished_at, format: :hour) if day.finished_at.present? %></td>
+            <td><%= l(day.started_at, format: :hour) if day.finished_at.present? %></td>
             <td><%= l day.finished_at.floor_to(15.minutes), format: :minutes if day.finished_at.present? %></td>
             <td></td>
             <td>
@@ -109,19 +109,16 @@
               <% end %>
             </td>
             <td><%= day.note %></td>
-            <td><%= day.overtime_at %></td>
-            <td></td>
+            <td><%= l(day.overtime_at, format: :hour) if day.overtime_at.present? %></td>
+            <td><%= l day.overtime_at.floor_to(15.minutes), format: :minutes if day.overtime_at.present? %></td>
             <td></td>
             <td><%= day.worked_contents %></td>
             <td></td>
           </tr>
         <% end %>
-
-
       </tbody>
   
       <tfoot>
-        
         <tr>
           <td colspan="4">累計日数</td>
           <td colspan="5">総合勤務時間</td>

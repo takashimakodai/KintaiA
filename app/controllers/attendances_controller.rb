@@ -41,7 +41,7 @@ class AttendancesController < ApplicationController
     else
       fiash[:danger] = "失敗しました"
     end
-    redirect_to users_url
+    redirect_to user_url(current_user)
   end
 
   def update_one_month
