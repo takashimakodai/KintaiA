@@ -38,6 +38,8 @@ class AttendancesController < ApplicationController
     @attendance = Attendance.find(params[:id])
     if @attendance.update_attributes(overtime_params)
       flash[:success] = "残業を申請しました"
+    else
+      fiash[:danger] = "失敗しました"
     end
     redirect_to users_url
   end
@@ -64,7 +66,7 @@ class AttendancesController < ApplicationController
     end
     
     def overtime_params
-      params.require(:user).permit(attedances: [:overtime_at, :worked_contents])[:attendances]
+      params.require(:attendance).permit(:overtime_at, :worked_contents)
     end
 
     # beforeフィルター
