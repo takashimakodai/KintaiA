@@ -93,12 +93,32 @@
 .search { 
 }
 
+/* 残業申請のお知らせ */
+
 .users-news {
-  margin-bottom: 20px;
+  font-size: 1.2em;
+  margin-bottom: 30px;
   p {
+  padding-top: 10px;
   line-height: 12px;
   }
 }
+
+.change-attendance-show {
+  font-size: 0.8em;
+  color: red;
+  border: double 3px;
+  padding-left: 7px;
+}
+
+.change-attendance-show:hover {
+  color: red;
+  background-color: #FAFAD2;
+}
+
+
+
+
 
 .btn-edit-user {
   margin-left: 10px;
@@ -114,15 +134,5 @@
 .change-attendance {
   margin-top: 15px;
   margin-bottom: 15px;
-}
-
-.change-attendance-show {
-  color: red;
-  border: double 3px;
-}
-
-.change-attendance-show:hover {
-  color: red;
-  background-color: #FAFAD2;
 }
 

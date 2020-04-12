@@ -43,6 +43,10 @@ class AttendancesController < ApplicationController
     end
     redirect_to user_url(current_user)
   end
+  
+  def news_overtime
+    @attendance = current_user.attendances.find_by(worked_on: params[:date])
+  end
 
   def update_one_month
     ActiveRecord::Base.transaction do # トランザクションを開始します。

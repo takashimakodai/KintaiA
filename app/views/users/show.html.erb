@@ -33,9 +33,14 @@
   
   <% if logged_in? && current_user.superior? %>
     <div class="users-news">
-      <p>【所属部長承認申請のお知らせ】<%= render 'form_s' %></p>
-      <P class="change-attendance">【勤怠変更申請のお知らせ】<%= render 'form_s' %></P>
-      <P>【残業申請のお知らせ】</P>
+      <p>【所属部長承認申請のお知らせ】</p>
+      <p>【勤怠変更申請のお知らせ】</P>
+      <p>
+        <% if @overtime_at >= 1 %>
+        【残業申請のお知らせ】
+          <%= link_to "#{@overtime_at}件通知があります。", attendances_news_overtime_user_path(@user), remote: true, class: "change-attendance-show" %>
+        <% end %>
+      </p>
     </div>
   <% end %>
   
@@ -144,3 +149,4 @@
 
 <!--モーダルウインドウ表示-->
 <div id="edit_overtime_info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="news_overtime" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

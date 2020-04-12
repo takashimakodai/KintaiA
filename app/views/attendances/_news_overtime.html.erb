@@ -1,0 +1,71 @@
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h1 class="modal-title">【残業申請のお知らせ】</h1>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-12">
+        <%= form_with(model: @attendance, local: true) do |f| %>
+        <table class="table table-bordered table-striped table-condensed overwork-table">
+          <thead class="overwork-table">
+            <tr>
+              <th>日付</th>
+              <th>曜日</th>
+              <th>終了予定時間</th>
+              <th>指定勤務終了時間</th>
+              <th>時間外時間</th>
+              <th>業務処理内容</th>
+              <th>指示者確認㊞</th>
+              <th>変更</th>
+              <th>勤怠を変更する</th>
+            </tr>
+           </thead>
+           
+           <tbody>
+             <tr>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td><%= f.time_field :overtime_at, class: "form-control" %></td>
+               <td><%= f.check_box :next_day, id: "remember_me" %></td>
+               <td><%= f.text_field :worked_contents, class: "form-control" %></td>
+               <td><%= f.select :confirmation_mark, [["選択して下さい"],["上長A"],["上長B"]] %></td>
+             </tr>
+           </tbody>
+          </table>
+              <div class="center">
+                <%= f.submit "残業を承認する", class: "btn btn-block btn-primary" %>
+              </div>
+           <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
