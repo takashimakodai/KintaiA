@@ -18,6 +18,8 @@ User.create!(name: "上長B",
              email: "sample-2@email.com",
              password: "password",
              password_confirmation: "password",
+             designated_work_start_time: Time.current.change(hour: 9, min: 0, sec: 0),
+             designated_work_end_time: Time.current.change(hour: 17, min: 0, sec: 0),
              superior: true)
 
 User.create!(name: "一般A",
