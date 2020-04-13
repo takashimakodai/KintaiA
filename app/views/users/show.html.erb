@@ -13,12 +13,12 @@
           【<%= l(@first_day, format: :middle) %>】時間管理表
           <%= link_to "→", user_path(date: @first_day.next_month), class: "btn btn-xs btn-primary" %>
         </td>
-        <td>指定勤務開始時間：<%= format_basic_info(@user.work_time) %></td>
+        <td>指定勤務開始時間：<%= format_basic_info(@user.designated_work_start_time) %></td>
         <td rowspan="2"colspan="3">基本勤務時間：<%= format_basic_info(@user.basic_time) %></td>
         <td rowspan="2">初日：<%= l(@first_day, format: :short) %></td>
       </tr>
       <tr>
-        <td>指定勤務終了時間：<%= format_basic_info(@user.work_time) %></td>
+        <td>指定勤務終了時間：<%= format_basic_info(@user.designated_work_end_time) %></td>
       </tr>
       <tr>
         <td>所属：<%= @user.department.present? ? @user.department : "未所属" %></td>
@@ -33,12 +33,17 @@
   
   <% if logged_in? && current_user.superior? %>
     <div class="users-news">
-      <p>【所属部長承認申請のお知らせ】</p>
-      <p>【勤怠変更申請のお知らせ】</P>
+      <p>
+        <span class="overtime-news">【所属部長承認申請のお知らせ】</span>
+      </p>
+      <p>
+        <span class="overtime-news">【勤怠変更申請のお知らせ】</span>
+      </P>
       <p>
         <% if @overtime_at >= 1 %>
-        【残業申請のお知らせ】
-          <%= link_to "#{@overtime_at}件通知があります。", attendances_news_overtime_user_path(@user), remote: true, class: "change-attendance-show" %>
+          【残業申請のお知らせ】<%= link_to "#{@overtime_at}件通知があります。", attendances_news_overtime_user_path(@user), remote: true, class: "change-attendance-show" %>
+        <% else %>
+          <span class="overtime-news">【残業申請のお知らせ】</span>
         <% end %>
       </p>
     </div>
