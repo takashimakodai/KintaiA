@@ -41,7 +41,7 @@
       </P>
       <p>
         <% if @overtime_at >= 1 %>
-          【残業申請のお知らせ】<%= link_to "#{@overtime_at}件通知があります。", attendances_news_overtime_user_path(@user), remote: true, class: "change-attendance-show" %>
+          【残業申請のお知らせ】<%= link_to "#{@overtime_at}件通知があります。", attendances_news_overtime_user_path(@user), class: "change-attendance-show" %>
         <% else %>
           <span class="overtime-news">【残業申請のお知らせ】</span>
         <% end %>
@@ -154,4 +154,3 @@
 
 <!--モーダルウインドウ表示-->
 <div id="edit_overtime_info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
-<div id="news_overtime" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

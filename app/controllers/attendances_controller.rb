@@ -34,6 +34,7 @@ class AttendancesController < ApplicationController
     @attendance = current_user.attendances.find_by(worked_on: params[:date])
   end
   
+  # 残業申請
   def request_overtime
     @attendance = Attendance.find(params[:id])
     if @attendance.update_attributes(overtime_params)
@@ -44,8 +45,22 @@ class AttendancesController < ApplicationController
     redirect_to user_url(current_user)
   end
   
+  # ここ残業申請のお知らせモーダル
   def news_overtime
-    @attendance = current_user.attendances.find_by(worked_on: params[:date])
+    @user = User.joins(:attendances).group("users.id").
+    where.not(attendances: {overtime_at: nil})
+    @attendance = Attendance.where.not(overtime_at: nil)
+  end
+  
+  # 残業申請への返信
+  def reply_overtime 
+    reply_overtime_params.each do |overtime|
+      if overtime.update(reply_overtime_params)
+        flash[:success] = "申請に返信しました"
+      else
+        flash[:danger] = UPDATE_ERROR_MSG
+      end
+    end
   end
 
   def update_one_month
@@ -72,6 +87,12 @@ class AttendancesController < ApplicationController
     def overtime_params
       params.require(:attendance).permit(:overtime_at, :worked_contents)
     end
+    
+    def reply_overtime_params
+      params.require(:user).permit(attendances: :mark_by_instructor)
+      [:attendances]
+    end
+
 
     # beforeフィルター
 
