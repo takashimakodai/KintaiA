@@ -123,7 +123,7 @@
             <td><%= l day.overtime_at.floor_to(15.minutes), format: :minutes if day.overtime_at.present? %></td>
             <td></td>
             <td><%= day.worked_contents %></td>
-            <td></td>
+            <td><%= day.mark_by_instructor %></td>
           </tr>
         <% end %>
       </tbody>

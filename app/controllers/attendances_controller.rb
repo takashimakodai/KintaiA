@@ -8,7 +8,7 @@ class AttendancesController < ApplicationController
 
   def update
     @user = User.find(params[:user_id])
-    @attendance = Attendance.find(params[:id])
+    @attendance =Attendance.find(params[:id])
     # 出勤時間が未登録であることを判定します。
     if @attendance.started_at.nil?
       if @attendance.update_attributes(started_at: Time.current.change(sec: 0))
@@ -51,16 +51,17 @@ class AttendancesController < ApplicationController
     where.not(attendances: {overtime_at: nil})
     @attendance = Attendance.where.not(overtime_at: nil)
   end
-  
   # 残業申請への返信
-  def reply_overtime 
-    reply_overtime_params.each do |overtime|
-      if overtime.update(reply_overtime_params)
+  def reply_overtime
+    reply_overtime_params.each do |id, item|
+    attendance = Attendance.find(id)
+      if attendance.update_attributes(item)
         flash[:success] = "申請に返信しました"
       else
         flash[:danger] = UPDATE_ERROR_MSG
       end
     end
+    redirect_to user_url(current_user)
   end
 
   def update_one_month
@@ -89,8 +90,7 @@ class AttendancesController < ApplicationController
     end
     
     def reply_overtime_params
-      params.require(:user).permit(attendances: :mark_by_instructor)
-      [:attendances]
+   params.require(:user).permit(attendances: :mark_by_instructor)[:attendances]
     end
 
 

@@ -11,6 +11,7 @@ class UsersController < ApplicationController
   end
 
   def show
+    @all_attendance = Attendance.all
     @worked_sum = @attendances.where.not(started_at: nil).count
     @overtime_at = @attendances.where.not(overtime_at: nil).count
   end
