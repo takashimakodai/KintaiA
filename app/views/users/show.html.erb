@@ -32,7 +32,6 @@
   </div>
   
   <% if logged_in? && current_user.superior? %>
-    <%# @all_attendance.each do |all| %>
     <div class="users-news">
       <p>
         <span class="overtime-news">【所属部長承認申請のお知らせ】</span>
@@ -42,13 +41,12 @@
       </P>
       <p>
         <% if @overtime_at >= 1 %>
-          【残業申請のお知らせ】<%= link_to "#{@overtime_at}件通知があります。", attendances_news_overtime_user_path(@user), class: "change-attendance-show" %>
+          【残業申請のお知らせ】<%= link_to "#{@overtime_at}件通知があります。", attendances_news_overtime_user_path(@user), remote: true, class: "change-attendance-show" %>
         <% else %>
           <span class="overtime-news">【残業申請のお知らせ】</span>
         <% end %>
       </p>
     </div>
-    <%# end %>
   <% end %>
   
   <div class="btn-users-show">
@@ -125,7 +123,12 @@
             <td><%= l day.overtime_at.floor_to(15.minutes), format: :minutes if day.overtime_at.present? %></td>
             <td></td>
             <td><%= day.worked_contents %></td>
-            <td><%= day.mark_by_instructor %></td>
+            <td>
+              <% if day.mark_by_instructor.present? %>
+                <div><%= day.confirmation_mark %>【残業申請：<span class="mark"><%= day.mark_by_instructor %></span>】</div>
+                <div></div>
+              <% end %>
+            </td>
           </tr>
         <% end %>
       </tbody>
@@ -139,7 +142,7 @@
           <td>
             <%= form_with(model: @user, local: true) do |f| %>
               <%= f.label "所属部長承認 未" %>
-              <%= f.text_field :name, class: "form-control" %>
+              <%= f.select :confirmation_mark, Attendance.confirmation_marks.keys.to_a, { include_blank: true }, class: "form-control" %>
             <% end %>
           </td>
         </tr>
@@ -156,3 +159,4 @@
 
 <!--モーダルウインドウ表示-->
 <div id="edit_overtime_info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="news_overtime" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

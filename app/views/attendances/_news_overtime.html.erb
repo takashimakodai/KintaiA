@@ -48,7 +48,7 @@
                <td><%= overtime.worked_contents %></td>
                <td><%= i.select :mark_by_instructor, Attendance.mark_by_instructors.keys.to_a, { include_blank: true } %></td>
                <td><%= i.check_box :changed, id: "remember_me" %></td>
-               <td><%= link_to "確認", "#", class: "btn btn-primary" %></td>
+               <td><%= link_to "確認", user_path, class: "btn btn-primary" %></td>
              </tr>
              <% end %>
             <% end %>
