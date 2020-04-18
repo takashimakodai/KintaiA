@@ -32,6 +32,7 @@
   </div>
   
   <% if logged_in? && current_user.superior? %>
+    <%# @all_attendance.each do |all| %>
     <div class="users-news">
       <p>
         <span class="overtime-news">【所属部長承認申請のお知らせ】</span>
@@ -47,6 +48,7 @@
         <% end %>
       </p>
     </div>
+    <%# end %>
   <% end %>
   
   <div class="btn-users-show">
