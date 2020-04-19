@@ -1,0 +1,122 @@
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <%= form_with(model: @user, url: attendances_reply_change_info_user_path(@attendance), local: true, method: :patch) do |f| %>
+      <% @user.each do |user| %>
+        <h1 class="modal-title">【<%= user.name %>】からの勤怠変更申請</h1>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <table class="table table-bordered table-striped table-condensed overwork-table">
+                <thead class="overwork-table">
+                  <tr>
+                    <th rowspan="3">日付</th>
+                    <th rowspan="3">曜日</th>
+                    <th colspan="4">変更前</th>
+                　　<th colspan="4">変更後</th>
+                　　<th rowspan="3">備考</th>
+                　　<th rowspan="3">指示者確認㊞</th>
+                　　<th rowspan="3">変更</th>
+                　　<th rowspan="3">勤怠を確認</th>
+                　</tr>
+                    <tr>
+                      <th colspan="2">出社</th>
+                      <th colspan="2">退社</th>
+                      <th colspan="2">出社</th>
+                      <th colspan="2">退社</th>
+                    </tr>
+                      <tr>
+                        <th class="time-area">時</th>
+                        <th class="time-area">分</th>
+                        <th class="time-area">時</th>
+                        <th class="time-area">分</th>
+                        <th class="time-area">時</th>
+                        <th class="time-area">分</th>
+                        <th class="time-area">時</th>
+                        <th class="time-area">分</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    <% @attendance.each do |day| %>
+                      <%= f.fields_for "attendances[]", day do |i| %>
+                        <% if day.user_id == user.id %> 
+                          <tr>
+                            <td><%= l(day.worked_on, format: :short) %></td>
+                            <td>
+                              <% if day.worked_on.wday == 0 %>
+                                <div class= "sunday"><%= $days_of_the_week[day.worked_on.wday] %></div>
+                              <% elsif day.worked_on.wday == 6 %>
+                                <div class="saturday"><%= $days_of_the_week[day.worked_on.wday] %></div>
+                              <% else %>
+                                <%= $days_of_the_week[day.worked_on.wday] %>
+                              <% end %>
+                            </td>
+                            <td><%#= l(day.started_at, format: :hour) if day.started_at.present? %></td>
+                            <td><%#= l day.started_at.floor_to(15.minutes), format: :minutes if day.started_at.present? %></td>
+                            <td><%#= l(day.finished_at, format: :hour) if day.finished_at.present? %></td>
+                            <td><%#= l day.finished_at.floor_to(15.minutes), format: :minutes if day.finished_at.present? %></td>
+                            <td><%= l(day.started_at, format: :hour) if day.started_at.present? %></td>
+                            <td><%= l day.started_at.floor_to(15.minutes), format: :minutes if day.started_at.present? %></td>
+                            <td><%= l(day.finished_at, format: :hour) if day.finished_at.present? %></td>
+                            <td><%= l day.finished_at.floor_to(15.minutes), format: :minutes if day.finished_at.present? %></td>
+                            <td><%= day.note %></td>
+                            <td><%= i.select :mark_by_instructor, Attendance.mark_by_instructors.keys.to_a, { include_blank: true }, class: "form-control" %></td>
+                            <td><%= i.check_box :changed, id: "remember_me" %></td>
+                            <td><%= link_to "確認", "#", class: "btn btn-primary" %> </td>
+                          </tr>
+                        <% end %>
+                      <% end %>
+                    <% end %>
+                  </tbody>
+              </table>
+            </div>
+          </div>
+        <% end %>
+        
+        <div class="center">
+          <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
+        </div>
+      </div>
+    <% end %>  
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

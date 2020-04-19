@@ -26,7 +26,6 @@
               <th>勤怠を確認</th>
             </tr>
            </thead>
-
            <% @attendance.each do |overtime| %>
              <%= f.fields_for "attendances[]", overtime do |i| %>
                <% if overtime.user_id == user.id %>
@@ -44,9 +43,9 @@
                </td>
                <td><%= format_basic_info(overtime.overtime_at) %></td>
                <td><%= format_basic_info(user.designated_work_end_time) %></td>
-               <td><%= (overtime.overtime_at)-(user.designated_work_end_time) %></td>
+               <td><%= working_times(user.designated_work_end_time.floor_to(15.minutes), overtime.overtime_at.floor_to(15.minutes)) %></td>
                <td><%= overtime.worked_contents %></td>
-               <td><%= i.select :mark_by_instructor, Attendance.mark_by_instructors.keys.to_a, { include_blank: true } %></td>
+               <td><%= i.select :mark_by_instructor, Attendance.mark_by_instructors.keys.to_a, { include_blank: true }, class: "form-control" %></td>
                <td><%= i.check_box :changed, id: "remember_me" %></td>
                <td><%= link_to "確認", user_path, class: "btn btn-primary" %></td>
              </tr>

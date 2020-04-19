@@ -34,14 +34,22 @@
   <% if logged_in? && current_user.superior? %>
     <div class="users-news">
       <p>
-        <span class="overtime-news">【所属部長承認申請のお知らせ】</span>
+        <%# if @overtime_at >=1 %>
+          【所属部長承認申請のお知らせ】<%= link_to "件の通知があります。" , attendances_approval_info_user_path(@user), class: "change-attendance-show" %>
+        <%# else %>
+          <!--<span class="overtime-news">【所属部長承認申請のお知らせ】</span>-->
+        <%# end %>
       </p>
       <p>
-        <span class="overtime-news">【勤怠変更申請のお知らせ】</span>
+        <% if @finished_at >= 1 %>
+          【勤怠変更申請のお知らせ】<%= link_to "#{@finished_at}件の通知があります。" , attendances_change_information_user_path(@user), class: "change-attendance-show" %>
+        <% else %>
+          <span class="overtime-news">【勤怠変更申請のお知らせ】</span>
+        <% end %>
       </P>
       <p>
         <% if @overtime_at >= 1 %>
-          【残業申請のお知らせ】<%= link_to "#{@overtime_at}件通知があります。", attendances_news_overtime_user_path(@user), remote: true, class: "change-attendance-show" %>
+          【残業申請のお知らせ】<%= link_to "#{@overtime_at}件の通知があります。", attendances_news_overtime_user_path(@user), remote: true, class: "change-attendance-show" %>
         <% else %>
           <span class="overtime-news">【残業申請のお知らせ】</span>
         <% end %>
@@ -109,7 +117,7 @@
                 <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-block btn-primary" %>
               <% end %>
             </td>
-            <td><%= l(day.started_at, format: :hour) if day.finished_at.present? %></td>
+            <td><%= l(day.finished_at, format: :hour) if day.finished_at.present? %></td>
             <td><%= l day.finished_at.floor_to(15.minutes), format: :minutes if day.finished_at.present? %></td>
             <td></td>
             <td>
@@ -126,7 +134,7 @@
             <td>
               <% if day.mark_by_instructor.present? %>
                 <div><%= day.confirmation_mark %>【残業申請：<span class="mark"><%= day.mark_by_instructor %></span>】</div>
-                <div></div>
+                <div><%= day.confirmation_mark %>【勤怠変更申請：<span class="mark"><%= day.mark_by_instructor %></span>】</div>
               <% end %>
             </td>
           </tr>

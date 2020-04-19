@@ -22,14 +22,14 @@ User.create!(name: "上長B",
              designated_work_end_time: Time.current.change(hour: 20, min: 0, sec: 0),
              superior: true)
 
-User.create!(name: "一般A",
+User.create!(name: "一般X",
              email: "sample-3@email.com",
              password: "password",
              password_confirmation: "password",
              designated_work_start_time: Time.current.change(hour: 9, min: 0, sec: 0),
              designated_work_end_time: Time.current.change(hour: 17, min: 0, sec: 0))
 
-User.create!(name: "一般B",
+User.create!(name: "一般Y",
              email: "sample-4@email.com",
              password: "password",
              password_confirmation: "password",

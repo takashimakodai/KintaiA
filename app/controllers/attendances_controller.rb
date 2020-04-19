@@ -33,8 +33,20 @@ class AttendancesController < ApplicationController
   def edit_overtime_info
     @attendance = current_user.attendances.find_by(worked_on: params[:date])
   end
+ 
+
+  # 残業申請のお知らせモーダル
+  def news_overtime
+    @user = User.joins(:attendances).group("users.id").where.not(attendances: {overtime_at: nil})
+    @attendance = Attendance.where.not(overtime_at: nil)
+  end
   
-  # 残業申請
+  # 勤怠変更申請モーダル
+  def change_information
+    @user = User.joins(:attendances).group("users.id").where.not(attendances: {finished_at: nil})
+    @attendance = Attendance.where.not(finished_at: nil)
+  end
+  
   def request_overtime
     @attendance = Attendance.find(params[:id])
     if @attendance.update_attributes(overtime_params)
@@ -42,15 +54,9 @@ class AttendancesController < ApplicationController
     else
       fiash[:danger] = "失敗しました"
     end
-    redirect_to user_url(current_user)
+    redirect_to user_url(current_user) 
   end
   
-  # ここ残業申請のお知らせモーダル
-  def news_overtime
-    @user = User.joins(:attendances).group("users.id").
-    where.not(attendances: {overtime_at: nil})
-    @attendance = Attendance.where.not(overtime_at: nil)
-  end
   # 残業申請への返信
   def reply_overtime
     reply_overtime_params.each do |id, item|
@@ -63,7 +69,24 @@ class AttendancesController < ApplicationController
     end
     redirect_to user_url(current_user)
   end
-
+  
+  # 勤怠変更申請への返信
+  def reply_change_info
+    reply_change_params.each do |id, item|
+    attendance = Attendance.find(id)
+      if attendance.update_attributes(item)
+        flash[:success] = "申請に返信しました"
+      else
+        flash[:danger] = UPDATE_ERROR_MSG
+      end
+    end
+    redirect_to user_url(current_user)
+  end
+  
+  def approval_info
+  end
+  
+  
   def update_one_month
     ActiveRecord::Base.transaction do # トランザクションを開始します。
       attendances_params.each do |id, item|
@@ -86,15 +109,16 @@ class AttendancesController < ApplicationController
     end
     
     def overtime_params
-       params.require(:attendance).permit(:overtime_at, :worked_contents, :confirmation_mark)
+      params.require(:attendance).permit(:overtime_at, :worked_contents, :confirmation_mark)
     end
     
     def reply_overtime_params
-   params.require(:user).permit(attendances: :mark_by_instructor)[:attendances]
+      params.require(:user).permit(attendances: :mark_by_instructor)[:attendances]
     end
-
-
-    # beforeフィルター
+    
+    def reply_change_params
+      params.require(:user).permit(attendances: :mark_by_instructor)[:attendances]
+    end
 
     # 管理権限者、または現在ログインしているユーザーを許可します。
     def admin_or_correct_user
