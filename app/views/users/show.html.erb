@@ -132,9 +132,13 @@
             <td></td>
             <td><%= day.worked_contents %></td>
             <td>
-              <% if day.mark_by_instructor.present? %>
+              <% if day.mark_by_instructor.present? && day.mark_approval.present? %>
                 <div><%= day.confirmation_mark %>【残業申請：<span class="mark"><%= day.mark_by_instructor %></span>】</div>
-                <div><%= day.confirmation_mark %>【勤怠変更申請：<span class="mark"><%= day.mark_by_instructor %></span>】</div>
+                <div><%= day.confirmation_mark %>【勤怠変更申請：<span class="mark"><%= day.mark_approval %></span>】</div>
+              <% elsif day.mark_by_instructor.present? %>
+                <div><%= day.confirmation_mark %>【残業申請：<span class="mark"><%= day.mark_by_instructor %></span>】</div>
+              <% elsif day.mark_by_instructor.present? %>
+                <div><%= day.confirmation_mark %>【勤怠変更申請：<span class="mark"><%= day.mark_approval %></span>】</div>
               <% end %>
             </td>
           </tr>

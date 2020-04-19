@@ -4,37 +4,39 @@
       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
-      <h1 class="modal-title">【】からの１ヶ月分の勤怠申請</h1>
     </div>
-    <div class="modal-body">
-      <div class="row">
-        <div class="col-md-12">
-        <%#= form_with(model: @attendance, url: attendances_request_overtime_user_path(@attendance), local: true, method: :patch) do |f| %>
-        <table class="table table-bordered table-striped table-condensed overwork-table">
-          <thead class="overwork-table">
-            <tr>
-              <th>月</th>
-              <th>指示者確認㊞</th>
-              <th>変更</th>
-              <th>勤怠を確認</th>
-            </tr>
-           </thead>
-           <tbody>
-             <tr>
-               <td><%#= l(@attendance.worked_on, format: :short) %></td>
-               <td><%#= f.time_field :overtime_at, class: "form-control" %></td>
-               <td><%#= f.check_box :next_day, id: "remember_me" %></td>
-               <td><%#= f.text_field :worked_contents, class: "form-control" %></td>
-               <td><%#= f.select :confirmation_mark, Attendance.confirmation_marks.keys.to_a, { include_blank: true } %></td>
-             </tr>
+    <% @user.each do |user| %>
+      <h1 class="modal-title">【<%= user.name %>】からの１ヶ月分の勤怠申請</h1>
+        <div class="modal-body">
+         <div class="row">
+           <div class="col-md-12">
+             <%#= form_with(model: @attendance, url: attendances_request_overtime_user_path(@attendance), local: true, method: :patch) do |f| %>
+               <table class="table table-bordered table-striped table-condensed overwork-table">
+                 <thead class="overwork-table">
+                   <tr>
+                     <th>月</th>
+                     <th>指示者確認㊞</th>
+                     <th>変更</th>
+                     <th>勤怠を確認</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><%= l(@first_day, format: :mid) %></td>
+                      <td><%#= f.time_field :overtime_at, class: "form-control" %></td>
+                      <td><%#= f.check_box :next_day, id: "remember_me" %></td>
+                      <td><%#= f.text_field :worked_contents, class: "form-control" %></td>
+                     <td><%#= f.select :confirmation_mark, Attendance.confirmation_marks.keys.to_a, { include_blank: true } %></td>
+                   </tr>
            </tbody>
           </table>
               <div class="center">
                 <%#= f.submit "変更を送信する", class: "btn btn-block btn-primary" %>
               </div>
-           <%# end %>
+             <%# end %>
         </div>
       </div>
+    <% end %>
     </div>
   </div>
 </div>

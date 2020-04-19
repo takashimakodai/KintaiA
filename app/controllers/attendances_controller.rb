@@ -34,7 +34,6 @@ class AttendancesController < ApplicationController
     @attendance = current_user.attendances.find_by(worked_on: params[:date])
   end
  
-
   # 残業申請のお知らせモーダル
   def news_overtime
     @user = User.joins(:attendances).group("users.id").where.not(attendances: {overtime_at: nil})
@@ -47,6 +46,7 @@ class AttendancesController < ApplicationController
     @attendance = Attendance.where.not(finished_at: nil)
   end
   
+  # 残業申請更新
   def request_overtime
     @attendance = Attendance.find(params[:id])
     if @attendance.update_attributes(overtime_params)
@@ -84,8 +84,9 @@ class AttendancesController < ApplicationController
   end
   
   def approval_info
+    @user = User.joins(:attendances).group("users.id").where.not(attendances: {finished_at: nil})
+    @first_day = Date.current.beginning_of_month
   end
-  
   
   def update_one_month
     ActiveRecord::Base.transaction do # トランザクションを開始します。
@@ -105,7 +106,7 @@ class AttendancesController < ApplicationController
 
     # 1ヶ月分の勤怠情報を扱います。
     def attendances_params
-      params.require(:user).permit(attendances: [:started_at, :finished_at, :note])[:attendances]
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :note, :confirmation_mark])[:attendances]
     end
     
     def overtime_params
@@ -117,7 +118,7 @@ class AttendancesController < ApplicationController
     end
     
     def reply_change_params
-      params.require(:user).permit(attendances: :mark_by_instructor)[:attendances]
+      params.require(:user).permit(attendances: :mark_approval)[:attendances]
     end
 
     # 管理権限者、または現在ログインしているユーザーを許可します。

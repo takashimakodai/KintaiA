@@ -14,7 +14,7 @@ class UsersController < ApplicationController
     @worked_sum = @attendances.where.not(started_at: nil).count
     all_attendance = Attendance.all
     @overtime_at = all_attendance.where.not(overtime_at: nil).count
-    @finished_at = @attendances.where.not(finished_at: nil).count
+    @finished_at = all_attendance.where.not(finished_at: nil).count
   end
 
   def new
@@ -59,8 +59,6 @@ class UsersController < ApplicationController
   def currently_working
     @user = User.all
   end
-  
-  
 
   private
 

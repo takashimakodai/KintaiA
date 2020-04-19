@@ -37,7 +37,7 @@
                <td><%= f.time_field :overtime_at, class: "form-control" %></td>
                <td><%= f.check_box :next_day, id: "remember_me" %></td>
                <td><%= f.text_field :worked_contents, class: "form-control" %></td>
-               <td><%= f.select :confirmation_mark, Attendance.confirmation_marks.keys.to_a, { include_blank: true } %></td>
+               <td><%= f.select :confirmation_mark, Attendance.confirmation_marks.keys.to_a, { include_blank: true }, class: "form-control" %></td>
              </tr>
            </tbody>
           </table>

@@ -44,7 +44,7 @@
               </td>
               <td><%= attendance.text_field :note, class: "form-control" %></td>
               <td><%= attendance.select :confirmation_mark, Attendance.confirmation_marks.keys.to_a, { include_blank: true }, class: "form-control" %></td>
-            </tr>
+            </tr>     
           <% end %>
         <% end %>
       </tbody>
