@@ -27,11 +27,13 @@ class AttendancesController < ApplicationController
   end
 
   def edit_one_month
+    @superior = User.where(superior: true).where.not(id: current_user)
   end
   
   # 残業申請
   def edit_overtime_info
     @attendance = current_user.attendances.find_by(worked_on: params[:date])
+    @superior = User.where(superior: true).where.not(id: current_user)
   end
  
   # 残業申請のお知らせモーダル
@@ -125,7 +127,7 @@ class AttendancesController < ApplicationController
     end
     
     def overtime_params
-      params.require(:attendance).permit(:overtime_at, :worked_contents, :confirmation_mark)
+      params.require(:attendance).permit(:overtime_at, :worked_contents, :overtime_mark)
     end
     
     def reply_overtime_params

@@ -15,6 +15,7 @@ class UsersController < ApplicationController
     all_attendance = Attendance.all
     @overtime_at = all_attendance.where.not(overtime_at: nil).count
     @finished_at = all_attendance.where.not(finished_at: nil).count
+    @superior = User.where(superior: true).where.not(id: current_user)
   end
 
   def new

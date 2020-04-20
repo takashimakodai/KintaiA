@@ -132,14 +132,8 @@
             <td><%#= working_times(user.designated_work_end_time.floor_to(15.minutes), overtime.overtime_at.floor_to(15.minutes)) %></td>
             <td><%= day.worked_contents %></td>
             <td>
-              <% if day.mark_by_instructor.present? && day.mark_approval.present? %>
-                <div><%= day.confirmation_mark %>【残業申請：<span class="mark"><%= day.mark_by_instructor %></span>】</div>
-                <div><%= day.confirmation_mark %>【勤怠変更申請：<span class="mark"><%= day.mark_approval %></span>】</div>
-              <% elsif day.mark_by_instructor.present? %>
-                <div><%= day.confirmation_mark %>【残業申請：<span class="mark"><%= day.mark_by_instructor %></span>】</div>
-              <% elsif day.mark_by_instructor.present? %>
-                <div><%= day.confirmation_mark %>【勤怠変更申請：<span class="mark"><%= day.mark_approval %></span>】</div>
-              <% end %>
+                <div><%= day.overtime_mark %>【残業申請：<span class="mark"><%= day.mark_by_instructor %></span>】</div>
+                <div><%= day.finish_mark %>【勤怠変更申請：<span class="mark"><%= day.mark_approval %></span>】</div>
             </td>
           </tr>
         <% end %>
@@ -154,7 +148,7 @@
           <td>
             <%= form_with(model: @user, local: true) do |f| %>
               <%= f.label "所属部長承認 未" %>
-              <%= f.select :confirmation_mark, Attendance.confirmation_marks.keys.to_a, { include_blank: true }, class: "form-control" %>
+                <%= f.collection_select( :finish_mark, @superior, :name, :name, { include_blank: true }, { class: "form-control"} ) %>
             <% end %>
           </td>
         </tr>
