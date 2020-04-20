@@ -83,9 +83,24 @@ class AttendancesController < ApplicationController
     redirect_to user_url(current_user)
   end
   
+  # 最後の１ヶ月承認
   def approval_info
     @user = User.joins(:attendances).group("users.id").where.not(attendances: {finished_at: nil})
+    @attendance = Attendance.find(params[:id])
     @first_day = Date.current.beginning_of_month
+  end
+  
+  # 最後の1ヶ月承認返信
+  def reply_approval_info
+    reply_approval_params.each do |id, item|
+    attendance = Attendance.find(id)
+    if attendance.update_attributes(item)
+      flash[:success] = "申請に返信しました"
+    else
+      flash[:danger] = UPDATE_ERROR_MSG
+    end
+  end
+      
   end
   
   def update_one_month
@@ -120,7 +135,11 @@ class AttendancesController < ApplicationController
     def reply_change_params
       params.require(:user).permit(attendances: :mark_approval)[:attendances]
     end
-
+    
+    def reply_approval_info
+      params.require(:user).permit(attendances: :mark_approval)[:attendances]
+    end
+    
     # 管理権限者、または現在ログインしているユーザーを許可します。
     def admin_or_correct_user
       @user = User.find(params[:user_id]) if @user.blank?

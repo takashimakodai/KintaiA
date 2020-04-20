@@ -34,11 +34,11 @@
   <% if logged_in? && current_user.superior? %>
     <div class="users-news">
       <p>
-        <%# if @overtime_at >=1 %>
-          【所属部長承認申請のお知らせ】<%= link_to "件の通知があります。" , attendances_approval_info_user_path(@user), class: "change-attendance-show" %>
-        <%# else %>
-          <!--<span class="overtime-news">【所属部長承認申請のお知らせ】</span>-->
-        <%# end %>
+        <% if @overtime_at >=1 %>
+          【所属部長承認申請のお知らせ】<%= link_to "#{@finished_at}件の通知があります。" , attendances_approval_info_user_path(@user), class: "change-attendance-show" %>
+        <% else %>
+          <span class="overtime-news">【所属部長承認申請のお知らせ】</span>
+        <% end %>
       </p>
       <p>
         <% if @finished_at >= 1 %>
@@ -129,7 +129,7 @@
             <td><%= day.note %></td>
             <td><%= l(day.overtime_at, format: :hour) if day.overtime_at.present? %></td>
             <td><%= l day.overtime_at.floor_to(15.minutes), format: :minutes if day.overtime_at.present? %></td>
-            <td></td>
+            <td><%#= working_times(user.designated_work_end_time.floor_to(15.minutes), overtime.overtime_at.floor_to(15.minutes)) %></td>
             <td><%= day.worked_contents %></td>
             <td>
               <% if day.mark_by_instructor.present? && day.mark_approval.present? %>
