@@ -64,7 +64,7 @@
                             <td><%= l(day.finished_at, format: :hour) if day.finished_at.present? %></td>
                             <td><%= l day.finished_at.floor_to(15.minutes), format: :minutes if day.finished_at.present? %></td>
                             <td><%= day.note %></td>
-                            <td><%= i.select :mark_approval, [["申請中"],["承認"],["否認"]], class: "form-control" %></td>
+                            <td><%= i.select :mark_approval, Attendance.mark_by_instructors.keys.to_a, { include_blank: true }, class: "form-control" %></td>
                             <td><%= i.check_box :changed, id: "remember_me" %></td>
                             <td><%= link_to "確認", "#", class: "btn btn-primary" %> </td>
                           </tr>       

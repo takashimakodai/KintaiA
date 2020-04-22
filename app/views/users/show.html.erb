@@ -60,7 +60,7 @@
   <div class="btn-users-show">
     <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(@user), class: "btn btn-primary" %>
     <%= link_to "CSV出力","#",class: "btn btn-primary" %>
-    <%= link_to "勤怠修正ログ(承認済)", "#",class: "btn btn-primary" %>
+    <%= link_to "勤怠修正ログ(承認済)", attendances_log_info_user_path(@user), class: "btn btn-primary" %>
   </div> 
   
   <div>
@@ -133,7 +133,8 @@
             <td><%= day.worked_contents %></td>
             <td>
                 <div><%= day.overtime_mark %>【残業申請：<span class="mark"><%= day.mark_by_instructor %></span>】</div>
-                <div><%= day.finish_mark %>【勤怠変更申請：<span class="mark"><%= day.mark_approval %></span>】</div>
+                <div><%= day.confirmation_mark %>【勤怠変更申請：<span class="mark"><%= day.mark_approval %></span>】</div>
+
             </td>
           </tr>
         <% end %>
@@ -166,3 +167,4 @@
 <!--モーダルウインドウ表示-->
 <div id="edit_overtime_info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="news_overtime" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+

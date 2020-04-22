@@ -96,13 +96,16 @@ class AttendancesController < ApplicationController
   def reply_approval_info
     reply_approval_params.each do |id, item|
     attendance = Attendance.find(id)
-    if attendance.update_attributes(item)
-      flash[:success] = "申請に返信しました"
-    else
-      flash[:danger] = UPDATE_ERROR_MSG
+      if attendance.update_attributes(item)
+        flash[:success] = "申請に返信しました"
+      else
+        flash[:danger] = UPDATE_ERROR_MSG
+      end
     end
   end
-      
+  
+  # 勤怠ログ 
+  def log_info     
   end
   
   def update_one_month
@@ -121,25 +124,25 @@ class AttendancesController < ApplicationController
 
   private
 
-    # 1ヶ月分の勤怠情報を扱います。
+    # 勤怠変更申請
     def attendances_params
       params.require(:user).permit(attendances: [:started_at, :finished_at, :note, :confirmation_mark])[:attendances]
     end
-    
+    # 残業申請
     def overtime_params
       params.require(:attendance).permit(:overtime_at, :worked_contents, :overtime_mark)
     end
-    
+    # 残業承認
     def reply_overtime_params
       params.require(:user).permit(attendances: :mark_by_instructor)[:attendances]
     end
-    
+    # 勤怠変更承認
     def reply_change_params
       params.require(:user).permit(attendances: :mark_approval)[:attendances]
     end
-    
+    # 最終承認
     def reply_approval_info
-      params.require(:user).permit(attendances: :mark_approval)[:attendances]
+      params.require(:user).permit(attendances: :mark_by_finish)[:attendances]
     end
     
     # 管理権限者、または現在ログインしているユーザーを許可します。

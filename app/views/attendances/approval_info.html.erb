@@ -23,7 +23,7 @@
                   <tbody>
                     <tr>
                       <td><%= l(@first_day, format: :mid) %></td>
-                      <td><%= f.select :confirmation_mark, Attendance.confirmation_marks.keys.to_a, { include_blank: true }, class: "form-control" %></td>
+                      <td><%= f.select :mark_by_finish, Attendance.confirmation_marks.keys.to_a, { include_blank: true }, class: "form-control" %></td>
                       <td><%= f.check_box :changed, id: "remember_me" %></td>
                       <td><%= link_to "確認","#", class: "btn btn-primary" %></td>
                     </tr>
