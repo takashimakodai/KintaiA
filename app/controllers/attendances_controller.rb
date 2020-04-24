@@ -83,6 +83,7 @@ class AttendancesController < ApplicationController
       end
     end
     redirect_to user_url(current_user)
+    
   end
   
   # 最後の１ヶ月承認
@@ -102,10 +103,13 @@ class AttendancesController < ApplicationController
         flash[:danger] = UPDATE_ERROR_MSG
       end
     end
+    # @finished = Attendance.where.().started_at
   end
   
   # 勤怠ログ 
-  def log_info     
+  def log_info
+    @attendance = Attendance.where.not(finished_at: nil)
+    @attendance = @attendance.where('worked_on LIKE ?', "%#{params[:search]}%") if params[:search].present?
   end
   
   def update_one_month
@@ -144,6 +148,7 @@ class AttendancesController < ApplicationController
     def reply_approval_info
       params.require(:user).permit(attendances: :mark_by_finish)[:attendances]
     end
+    
     
     # 管理権限者、または現在ログインしているユーザーを許可します。
     def admin_or_correct_user

@@ -7,9 +7,13 @@
       <th class="col-xs-4 center">社員番号</th>
       <th class="col-xs-8 center">名前</th>
     </tr>
-    <tbody>
-      <th class="col-xs-4 center"><%= @user.name %></th>
-      <th class="col-xs-8 center">高嶋広大</th>
-    </tbody>
+      <% @user.each do |user| %>
+        <%# if started_at.present? && finished_at.blank? %> 
+          <tbody>
+            <th class="col-xs-4 center"><%= user.uid %></th>
+            <th class="col-xs-8 center"><%= user.name %></th>
+          </tbody>
+        <%# end %>
+    <% end %>
   </table>
 </div>

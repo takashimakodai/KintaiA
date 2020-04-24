@@ -5,55 +5,45 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-      <%#= form_with(model: @attendance, url: attendances_reply_approval_info_user_path(@attendance), local: true, method: :patch) do |f| %>
-        <%# @user.each do |user| %>
-          <h1 class="modal-title">勤怠ログ</h1>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-md-12">
-                <table class="table table-bordered table-striped table-condensed overwork-table">
-                  <thead class="overwork-table">
-                    <tr>
-                      <th>リセット</th>
-                    </tr>
-                    <tr>
-                      <th>日</th>
-                      <th>2019</th>
-                    </tr>
-                    <tr>
-                      <th>日</th>
-                      <th>2019</th>
-                    </tr>
-                    <tr>
-                      <th>日付</th>
-                      <th>変更前出社時間</th>
-                      <th>変更前退社時間</th>
-                      <th>変更後出社時間</th>
-                      <th>変更後退社時間</th>
-                      <th>指示者</th>
-                      <th>承認日</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            <%# end %>
-          
-          <div class="center">
-            <%#= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
-          </div>
+  　<h1 class="modal-title">勤怠ログ</h1>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-12">
+          <table class="table table-bordered table-striped table-condensed overwork-table">
+            <thead class="overwork-table">
+              <%= form_with url: @user, method: :get, local: true do |f| %>
+                <tr>
+                  <th><%= f.submit "リセット",class: "btn btn-sm btn-primary" %></th>
+                  <th><%#= f.date_select :search, { include_blank: true, discard_day: true, use_month_numbers: true, date_separator: '年'} %>月</th>
+                  <th><%= f.select :search, [[""],["2020"],["2019"]], class: "form-control" %></th>
+                </tr>
+                <tr>
+                  <th>日付</th>
+                  <th>変更前出社時間</th>
+                  <th>変更前退社時間</th>
+                  <th>変更後出社時間</th>
+                  <th>変更後退社時間</th>
+                  <th>指示者</th>
+                  <th>承認日</th>
+                </tr>
+              </thead>
+              <% @attendance.each do |day| %>
+                <tbody>
+                  <tr>
+                    <td><%= l(day.worked_on, format: :defaults) %></td>
+                    <td><%#= l(day.change_started_at.floor_to(15.minutes), format: :time) %></td>
+                    <td><%#= l(day.change_finished_at.floor_to(15.minutes), format: :time) %></td>
+                    <td><%= l(day.started_at.floor_to(15.minutes), format: :time) %></td>
+                    <td><%= l(day.finished_at.floor_to(15.minutes), format: :time) %></td>
+                    <td><%= day.confirmation_mark %></td>
+                    <td><%= l(day.updated_at, format: :longs) %></td>
+                  </tr>
+                </tbody>
+              <% end %>
+            <% end %>
+          </table>
         </div>
-      <%# end %>
+      </div>
     </div>
   </div>
 </div>
