@@ -14,7 +14,7 @@ ja:
           employee_number: 社員番号
           card_number: カードID
           basic_work_time: 基本勤務時間
-          basic_time: 時間
+          basic_time: 勤務時間
           work_time: 指定勤務時間
           designated_work_start_time: 指定勤務開始時間
           designated_work_end_time: 指定勤務終了時間

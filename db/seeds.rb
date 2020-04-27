@@ -41,16 +41,6 @@ User.create!(name: "一般Y",
              designated_work_end_time: Time.current.change(hour: 17, min: 0, sec: 0),
              uid: "555")
 
-Base.create!(base_number: "1",
-             base_name: "東京",
-             base_category: "新宿",
-             user_id: "1")
-             
-Base.create!(base_number: "2",
-             base_name: "沖縄",
-             base_category: "那覇",
-             user_id: "1")
-
 
 
 

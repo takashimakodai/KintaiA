@@ -11,12 +11,12 @@ class BasesController < ApplicationController
   end
   
   def create
-    @base = User.new(params[:base_params])
+    @base = Base.new(base_params)
     if @base.save
-      flash[:success] = '登録に成功しました。'
-      redirect_to @base
+      flash[:success] = '拠点情報を登録しました。'
+      redirect_to bases_path
     else
-      redirect_to new
+      render :new
     end
   end
   
@@ -27,19 +27,19 @@ class BasesController < ApplicationController
   def update
     @base = Base.find(params[:id])
     if @base.update_attributes(base_params)
-      flash[:success] = '情報を更新しました。'
-      redirect_to basis_path
+      flash[:success] = '拠点情報を更新しました。'
+      redirect_to bases_path
     else
       render :edit
-      flash[:danger] = '入力して下さい'
+      flash[:danger] = '入力して下さい。'
     end
   end
 
   def destroy
     @base = Base.find(params[:id])
     @base.destroy
-    flash[:success] = "#{@base.base_name}のデータを削除しました。"
-    redirect_to basis_path
+    flash[:success] = '拠点情報を削除しました。'
+    redirect_to bases_path
   end
   
   private
