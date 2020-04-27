@@ -53,7 +53,7 @@ class UsersController < ApplicationController
 
    # 出勤社員一覧
   def currently_working
-    @user = User.all
+    @attendance = Attendance.where.not(started_at: nil).where(finished_at: nil)
   end
 
   private
