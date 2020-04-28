@@ -12,17 +12,64 @@
 </div>
 
 <div class="col-md-10 col-md-offset-1">
- <table class="table table-condensed" id="table-users">
+  <p>Example</p>
+  <table class="table table-condensed" id="table-users">
     <% @users.each do |user| %>
+    <tbody>
       <tr>
-        <td><%= user.name %></td>
+        <td>
+          <%= user.name %><br/>
+          <%= link_to "削除", user, method: :delete, data: { confirm: "削除してよろしいですか？" }, class: "btn btn-primary" %>
+          <div class="panel-group">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a class="btn btn-lg btn-primary" data-toggle="collapse" href="#collapseExample<%= user.id %>" role="button" aria-expanded="false" aria-controls="collapseExample">編集</a> 
+                </h4>
+              </div>
+            </div>
+          </div>
+        　<div class="collapse" id="collapseExample<%= user.id %>">
+  　         <div class="card card-body">
+              <%= form_with(model: user, url: user_path(user), local: true, method: :patch) do |f| %>
+
+                <%= f.label :name, class: "label-#{yield(:class_text)}" %>
+                <%= f.text_field :name, class: "form-control" %>
+              
+                <%= f.label :email, class: "label-#{yield(:class_text)}" %>
+                <%= f.email_field :email, class: "form-control" %>
+              
+                <%= f.label :affiliation, class: "label-#{yield(:class_text)}" %>
+                <%= f.text_field :affiliation, class: "form-control" %>
+                
+                <%= f.label :employee_number, class: "label-#{yield(:class_text)}" %>
+                <%= f.text_field :employee_number, class: "form-control" %>
+                
+                <%= f.label :card_number, class: "label-#{yield(:class_text)}" %>
+                <%= f.text_field :card_number, class: "form-control" %>
+              
+                <%= f.label :password, class: "label-#{yield(:class_text)}" %>
+                <%= f.password_field :password, class: "form-control" %>
+              
+                <%= f.label :password_confirmation, class: "label-#{yield(:class_text)}" %>
+                <%= f.password_field :password_confirmation, class: "form-control" %>
+                
+                <%= f.label :basic_work_time, class: "label-#{yield(:class_text)}" %>
+                <%= f.time_field :basic_work_time, class: "form-control" %>
+                
+                <%= f.label :designated_work_start_time, class: "label-#{yield(:class_text)}" %>
+                <%= f.time_field :designated_work_start_time, class: "form-control" %>
+                
+                <%= f.label :designated_work_end_time, class: "label-#{yield(:class_text)}" %>
+                <%= f.time_field :designated_work_end_time, class: "form-control" %>
+              
+                <%= f.submit "更新", class: "btn btn-primary btn-block btn-#{yield(:class_text)}" %>
+              <% end %>
+          　</div>
+        　</div>
+        </td>
       </tr>
-      <tr>
-        <td><%= link_to "削除", user, method: :delete, data: { confirm: "削除してよろしいですか？" }, class: "btn btn-primary" %></td>
-      </tr>
-      <tr> 
-        <td><%= link_to "編集", edit_user_path(user), class: "btn btn-lg btn-primary btn-edit-user" %></td>
-      </tr> 
+    </tbody>
     <% end %>
   </table>
 </div>
