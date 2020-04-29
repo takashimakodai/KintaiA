@@ -26,6 +26,7 @@ Rails.application.routes.draw do
       get 'attendances/approval_info'
       patch 'attendances/reply_approval_info'
       get 'attendances/log_info'
+      get 'attendances/csv_output'
     end
     resources :attendances, only: :update 
   end

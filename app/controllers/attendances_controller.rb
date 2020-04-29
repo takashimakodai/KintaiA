@@ -1,8 +1,8 @@
 class AttendancesController < ApplicationController
-  before_action :set_user, only: [:edit_one_month, :update_one_month]
+  before_action :set_user, only: [:edit_one_month, :update_one_month, :csv_output]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
-  before_action :set_one_month, only: :edit_one_month
+  before_action :set_one_month, only: [:edit_one_month, :csv_output]
 
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
 
@@ -28,6 +28,16 @@ class AttendancesController < ApplicationController
 
   def edit_one_month
     @superior = User.where(superior: true).where.not(id: current_user)
+  end
+  
+  # csv出力
+  def csv_output
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "当月分勤怠データ.csv", type: :csv
+      end
+    end
   end
   
   # 残業申請
