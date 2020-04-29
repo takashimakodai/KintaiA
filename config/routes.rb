@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       get 'attendances/log_info'
       get 'attendances/csv_output'
     end
-    resources :attendances, only: :update 
+    resources :attendances, only: :update
+    collection { post :import }
   end
 end

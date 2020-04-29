@@ -9,7 +9,18 @@ class UsersController < ApplicationController
   def index
     @users = query_params.order(:id).page(params[:page])
   end
-
+  
+  def import
+    if params[:file].blank?
+      flash[:danger] = "インポートするCSVファイルを選択して下さい。"
+      redirect_to users_url
+    else
+      User.import(params[:file])
+      flash[:success] = "CSVファイルをインポートしました。"
+      redirect_to users_url
+    end
+  end
+  
   def show
     @worked_sum = @attendances.where.not(started_at: nil).count
     all_attendance = Attendance.all
