@@ -1,4 +1,5 @@
 require 'csv'
+require 'string/scrub'
 
 class User < ApplicationRecord
   has_many :attendances, dependent: :destroy
@@ -14,6 +15,8 @@ class User < ApplicationRecord
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: true
   validates :department, length: { in: 2..50 }, allow_blank: true
+  validates :employee_number, presence: true, numericality: {only_integer: true }
+  validates :uid, presence: true, numericality: {only_integer: true}
   validates :basic_time, presence: true
   validates :work_time, presence: true
   has_secure_password
@@ -57,7 +60,7 @@ class User < ApplicationRecord
   def self.import(file)
     CSV.foreach(file.path, headers: true) do |row|
       # emailが見つかれば、レコードを呼び出し。見つからなければ、新規作成
-      user = find_by(email: row["email"]) || new
+      user = find_by(id: row["id"]) || new
       # CSVからデータを取得し、設定する
       user.attributes = row.to_hash.slice(*updatable_attributes)
       # 保存する

@@ -31,14 +31,13 @@ class BasesController < ApplicationController
       redirect_to bases_path
     else
       render :edit
-      flash[:danger] = '入力して下さい。'
     end
   end
 
   def destroy
     @base = Base.find(params[:id])
     @base.destroy
-    flash[:success] = '拠点情報を削除しました。'
+    flash[:danger] = '拠点情報を削除しました。'
     redirect_to bases_path
   end
   

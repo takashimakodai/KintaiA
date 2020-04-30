@@ -12,7 +12,7 @@ ja:
           email: メールアドレス
           affiliation: 所属
           employee_number: 社員番号
-          card_number: カードID
+          card_number: ナンバーカード
           basic_work_time: 基本勤務時間
           basic_time: 勤務時間
           work_time: 指定勤務時間

@@ -17,6 +17,7 @@ gem 'jbuilder',     '~> 2.5'
 gem 'rounding'
 gem 'ransack'
 gem 'roo'
+gem 'string-scrub'
 
 group :development, :test do
   gem 'sqlite3', '1.3.13'
