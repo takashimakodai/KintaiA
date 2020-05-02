@@ -11,11 +11,16 @@
         <div class="col-md-12">
           <table class="table table-bordered table-striped table-condensed overwork-table">
             <thead class="overwork-table">
-              <%= form_with url: @user, method: :get, local: true do |f| %>
+              <%= form_with url: attendances_log_info_user_path, method: :get, local: true do |f| %>
                 <tr>
-                  <th><%= f.submit "リセット",class: "btn btn-sm btn-primary" %></th>
-                  <th><%#= f.date_select :search, { include_blank: true, discard_day: true, use_month_numbers: true, date_separator: '年'} %>月</th>
-                  <th><%= f.select :search, [[""],["2020"],["2019"]], class: "form-control" %></th>
+                  <th><%= f.submit "検索年月選択",class: "btn btn-sm btn-primary" %></th>
+                  <th><%= f.date_select :worked_on, { include_blank: true, 
+                                                      discard_day: true,
+                                                      date_separator: "-",
+                                                      use_month_numbers: true,
+                                                      start_year: Date.today.year,
+                                                      end_year: @attendances.first.try(:worked_on).try(:year)} %>
+                  </th>
                 </tr>
                 <tr>
                   <th>日付</th>
@@ -27,14 +32,14 @@
                   <th>承認日</th>
                 </tr>
               </thead>
-              <% @attendance.each do |day| %>
+              <% @attendances.each do |day| %>
                 <tbody>
                   <tr>
                     <td><%= l(day.worked_on, format: :defaults) %></td>
                     <td><%#= l(day.change_started_at.floor_to(15.minutes), format: :time) %></td>
                     <td><%#= l(day.change_finished_at.floor_to(15.minutes), format: :time) %></td>
-                    <td><%= l(day.started_at.floor_to(15.minutes), format: :time) %></td>
-                    <td><%= l(day.finished_at.floor_to(15.minutes), format: :time) %></td>
+                    <td><%#= l(day.started_at.floor_to(15.minutes), format: :time) %></td>
+                    <td><%= l(day.started_at, format: :time) if day.started_at.present? %></td>
                     <td><%= day.confirmation_mark %></td>
                     <td><%= l(day.updated_at, format: :longs) %></td>
                   </tr>

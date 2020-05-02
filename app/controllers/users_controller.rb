@@ -22,6 +22,7 @@ class UsersController < ApplicationController
   end
   
   def show
+    @attendance = Attendance.find(params[:id])
     @worked_sum = @attendances.where.not(started_at: nil).count
     all_attendance = Attendance.all
     @overtime_at = all_attendance.where.not(overtime_at: nil).count

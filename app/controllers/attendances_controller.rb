@@ -58,15 +58,21 @@ class AttendancesController < ApplicationController
     @attendance = Attendance.where.not(finished_at: nil)
   end
   
-  # 残業申請更新
+  # 残業申請
   def request_overtime
     @attendance = Attendance.find(params[:id])
-    if @attendance.update_attributes(overtime_params)
-      flash[:success] = "残業を申請しました"
-    else
-      fiash[:danger] = "失敗しました"
-    end
-    redirect_to user_url(current_user) 
+      # 翌日処理
+      #@attendance.next_day == true
+      if #params[:attendance][:next_day] == true
+        #@attendance = overtime_at.Time.now.tomorrow
+        
+        if @attendance.update_attributes(overtime_params)
+          flash[:success] = "残業申請しました。"
+        else
+          flash[:danger] = "残業申請に失敗しました。"
+        end
+        redirect_to user_url(current_user)
+      end
   end
   
   # 残業申請への返信
@@ -93,7 +99,6 @@ class AttendancesController < ApplicationController
       end
     end
     redirect_to user_url(current_user)
-    
   end
   
   # 最後の１ヶ月承認
@@ -118,8 +123,14 @@ class AttendancesController < ApplicationController
   
   # 勤怠ログ 
   def log_info
-    @attendance = Attendance.where.not(finished_at: nil)
-    @attendance = @attendance.where('worked_on LIKE ?', "%#{params[:search]}%") if params[:search].present?
+    @user = User.find(params[:id])
+    if params["worked_on(1i)"].present? && params["worked_on(2i)"].present?
+      year_month = "#{params["worked_on(1i)"]}/#{params["worked_on(2i)"]}"
+      @day = DateTime.parse(year_month) if year_month.present?
+      @attendances = @user.attendances.where(worked_on: @day.all_month)
+    else
+      @attendances = @user.attendances
+    end
   end
   
   def update_one_month
@@ -135,6 +146,7 @@ class AttendancesController < ApplicationController
     flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
     redirect_to attendances_edit_one_month_user_url(date: params[:date])
   end
+
 
   private
 

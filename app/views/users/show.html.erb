@@ -1,4 +1,6 @@
 <% provide(:title, @user.name) %>
+<%#= render 'shared/error_messages_at', object: @attendance %>
+
 <% if logged_in? && current_user.admin? %>
   <div class="center jumbotron">
     <h1>勤怠システム</h1>
