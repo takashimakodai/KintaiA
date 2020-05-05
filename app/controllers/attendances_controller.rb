@@ -61,18 +61,12 @@ class AttendancesController < ApplicationController
   # 残業申請
   def request_overtime
     @attendance = Attendance.find(params[:id])
-      # 翌日処理
-      #@attendance.next_day == true
-      if #params[:attendance][:next_day] == true
-        #@attendance = overtime_at.Time.now.tomorrow
-        
-        if @attendance.update_attributes(overtime_params)
-          flash[:success] = "残業申請しました。"
-        else
-          flash[:danger] = "残業申請に失敗しました。"
-        end
-        redirect_to user_url(current_user)
+      if @attendance.update_attributes(overtime_params)
+        flash[:success] = "残業申請しました。"
+      else
+        flash[:danger] = "残業申請に失敗しました。"
       end
+    redirect_to user_url(current_user)
   end
   
   # 残業申請への返信
@@ -118,7 +112,6 @@ class AttendancesController < ApplicationController
         flash[:danger] = UPDATE_ERROR_MSG
       end
     end
-    # @finished = Attendance.where.().started_at
   end
   
   # 勤怠ログ 
@@ -156,7 +149,7 @@ class AttendancesController < ApplicationController
     end
     # 残業申請
     def overtime_params
-      params.require(:attendance).permit(:overtime_at, :worked_contents, :overtime_mark)
+      params.require(:attendance).permit(:overtime_at, :worked_contents, :overtime_mark, :next_day)
     end
     # 残業承認
     def reply_overtime_params
@@ -179,4 +172,5 @@ class AttendancesController < ApplicationController
         redirect_to(root_url)
       end  
     end
+  
 end

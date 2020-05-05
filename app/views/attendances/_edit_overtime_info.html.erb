@@ -23,7 +23,7 @@
            </thead>
            
            <tbody>
-             <tr>
+             <tr>  
                <td><%= l(@attendance.worked_on, format: :short) %></td>
                <td>
                  <% if @attendance.worked_on.wday == 0 %>
@@ -35,7 +35,7 @@
                  <% end %>
                </td>
                <td><%= f.time_field :overtime_at, class: "form-control" %></td>
-               <td><%= f.check_box :next_day, id: "remember_me", true, false %></td>
+               <td><%= f.check_box :next_day, id: "remember-me" %></td>
                <td><%= f.text_field :worked_contents, class: "form-control" %></td>
                <td><%= f.collection_select( :overtime_mark, @superior, :name, :name, {prompt: false}, {class: "form-control"} ) %></td>
              </tr>
@@ -50,11 +50,6 @@
     </div>
   </div>
 </div>
-
-
-
-
-
 
 
 

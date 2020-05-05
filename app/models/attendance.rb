@@ -37,8 +37,17 @@ class Attendance < ApplicationRecord
   validate :overtime_at_than_designated_work_end_time_fast_if_invalid
     
   def overtime_at_than_designated_work_end_time_fast_if_invalid
-    if user.designated_work_end_time.present? && overtime_at.present?
+    if user.designated_work_end_time.present? && overtime_at.present? && next_day == false
       errors.add(:overtime_at, "が不適切な時間です") if user.designated_work_end_time > overtime_at
+    end
+  end
+  
+  # 残業申請にて終了予定時間が退社時間より早いのは無効
+  validate :overtime_at_than_finished_at_fast_if_invalid
+  
+  def overtime_at_than_finished_at_fast_if_invalid
+    if overtime_at.present? && finished_at.present? && next_day == false
+      errors.add(:overtime_at, "が不適切な時間です") if finished_at > overtime_at
     end
   end
   
