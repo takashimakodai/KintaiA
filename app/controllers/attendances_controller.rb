@@ -73,10 +73,11 @@ class AttendancesController < ApplicationController
   def reply_overtime
     reply_overtime_params.each do |id, item|
     attendance = Attendance.find(id)
-      if attendance.update_attributes(item)
+      if item[:change_at] == "1"
+        attendance.update_attributes(item)
         flash[:success] = "申請に返信しました"
       else
-        flash[:danger] = UPDATE_ERROR_MSG
+        flash[:danger] = "変更をチェックして下さい。"
       end
     end
     redirect_to user_url(current_user)
@@ -86,7 +87,8 @@ class AttendancesController < ApplicationController
   def reply_change_info
     reply_change_params.each do |id, item|
     attendance = Attendance.find(id)
-      if attendance.update_attributes(item)
+      if item[:change_at] == true
+        attendance.update_attributes(item)
         flash[:success] = "申請に返信しました"
       else
         flash[:danger] = UPDATE_ERROR_MSG
@@ -153,7 +155,7 @@ class AttendancesController < ApplicationController
     end
     # 残業承認
     def reply_overtime_params
-      params.require(:user).permit(attendances: :mark_by_instructor)[:attendances]
+      params.require(:user).permit(attendances: [:mark_by_instructor, :change_at])[:attendances]
     end
     # 勤怠変更承認
     def reply_change_params

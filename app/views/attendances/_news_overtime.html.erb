@@ -46,7 +46,7 @@
                <td><%= working_times(user.designated_work_end_time.floor_to(15.minutes), overtime.overtime_at.floor_to(15.minutes)) %></td>
                <td><%= overtime.worked_contents %></td>
                <td><%= i.select :mark_by_instructor, Attendance.mark_by_instructors.keys.to_a, { include_blank: true }, class: "form-control" %></td>
-               <td><%= i.check_box :changed, id: "remember_me" %></td>
+               <td><%= i.check_box :change_at, id: "remember-me" %></td>
                <td><%= link_to "確認", user_path, class: "btn btn-primary" %></td>
              </tr>
              <% end %>

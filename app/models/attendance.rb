@@ -1,9 +1,9 @@
 class Attendance < ApplicationRecord
   belongs_to :user
   
-  enum mark_by_instructor: { "なし" => 1, "申請中" => 2, "承認" => 3, "否認" => 4 }, _prefix: true      #残業承認
-  enum mark_approval: { "なし" => 1, "申請中" => 2, "承認" => 3, "否認" => 4 }, _prefix: true           #勤怠変更承認
-  enum mark_by_finish: { "なし" => 1, "申請中" => 2, "承認" => 3, "否認" => 4 }, _prefix: true          #最終承認
+  enum mark_by_instructor: { "申請中" => 1, "承認" => 2, "否認" => 3 }, _prefix: true      #残業承認
+  enum mark_approval: { "申請中" => 1, "承認" => 2, "否認" => 3 }, _prefix: true           #勤怠変更承認
+  enum mark_by_finish: { "申請中" => 1, "承認" => 2, "否認" => 3 }, _prefix: true          #最終承認
   
   validates :worked_on, presence: true 
   validates :note, length: { maximum: 50 }
@@ -58,6 +58,14 @@ class Attendance < ApplicationRecord
     errors.add(:overtime_at, "が必要です") if overtime_at.blank? && overtime_mark.present?
   end
   
+  # 残業申請への返信で指示者確認が申請中の場合は無効です。
+  # validate :mark_by_instructor_reply
+  
+  # def mark_by_instructor_reply
+  #   if mark_by_instructor.present? && change_at.present? 
+  #     errors.add(:mark_by_instructor, "は無効です") if Attendance.mark_by_instructor_申請中
+  #   end
+  # end
 end
 
   

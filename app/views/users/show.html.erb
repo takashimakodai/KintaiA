@@ -129,15 +129,27 @@
               <% end %>
             </td>
             <td><%= day.note %></td>
-            <td>
-                <%= l(day.overtime_at, format: :hour) if day.overtime_at.present? %>
-            </td>
+            <td><%= l(day.overtime_at, format: :hour) if day.overtime_at.present? %></td>
             <td><%= l day.overtime_at.floor_to(15.minutes), format: :minutes if day.overtime_at.present? %></td>
-            <td><%#= working_times(user.designated_work_end_time.floor_to(15.minutes), overtime.overtime_at.floor_to(15.minutes)) %></td>
+            <td>
+              <% if day.overtime_at.present? && day.next_day == true %>
+                <%= tomorrow_times(@user.designated_work_end_time.floor_to( 15.minutes), day.overtime_at.floor_to(15.minutes)) %>
+              <% elsif day.overtime_at.present? && day.next_day == false %>
+                <%= working_times(@user.designated_work_end_time.floor_to(15.minutes), day.overtime_at.floor_to(15.minutes)) %>
+              <% end %>
+            </td>
             <td><%= day.worked_contents %></td>
             <td>
-                <div><%= day.overtime_mark %>【残業申請：<span class="mark"><%= day.mark_by_instructor %></span>】</div>
-                <div><%= day.confirmation_mark %>【勤怠変更申請：<span class="mark"><%= day.mark_approval %></span>】</div>
+              <div>
+                <% if day.overtime_mark.present? && day.change_at == true %>
+                  <%= day.overtime_mark %>【残業申請：<span class="mark"><%= day.mark_by_instructor %></span>】
+                <% elsif day.overtime_mark.present? %>
+                  <%= day.overtime_mark %>【残業申請：<span class="mark">申請中</span>】
+                <% end %>
+              </div>
+              <div>
+                <%= day.confirmation_mark %>【勤怠変更申請：<span class="mark"><%= day.mark_approval %></span>】
+              </div>
             </td>
           </tr>
         <% end %>

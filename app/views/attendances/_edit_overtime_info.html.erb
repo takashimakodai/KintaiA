@@ -22,6 +22,7 @@
             </tr>
            </thead>
            
+           <% if @attendance.overtime_mark.present? %>
            <tbody>
              <tr>  
                <td><%= l(@attendance.worked_on, format: :short) %></td>
@@ -40,6 +41,7 @@
                <td><%= f.collection_select( :overtime_mark, @superior, :name, :name, {prompt: false}, {class: "form-control"} ) %></td>
              </tr>
            </tbody>
+           <% end %>
           </table>
               <div class="center">
                 <%= f.submit "残業を申請する", class: "btn btn-block btn-primary" %>

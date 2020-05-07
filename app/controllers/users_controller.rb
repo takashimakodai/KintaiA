@@ -25,7 +25,8 @@ class UsersController < ApplicationController
     @attendance = Attendance.find(params[:id])
     @worked_sum = @attendances.where.not(started_at: nil).count
     all_attendance = Attendance.all
-    @overtime_at = all_attendance.where.not(overtime_at: nil).count
+    @overtime_at = all_attendance.where.not(overtime_at: nil).where(mark_by_instructor: nil)\
+                   .or(all_attendance.where.not(overtime_at: nil).where(mark_by_instructor: "申請中")).count
     @finished_at = all_attendance.where.not(finished_at: nil).count
     @superior = User.where(superior: true).where.not(id: current_user)
   end
