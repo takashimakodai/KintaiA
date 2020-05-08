@@ -15,6 +15,7 @@
           <th>指示者確認㊞</th>
         </tr>
       </thead>
+      
       <tbody>
         <% @attendances.each do |day| %>
           <%= f.fields_for "attendances[]", day do |attendance| %>
@@ -29,21 +30,24 @@
                   <%= $days_of_the_week[day.worked_on.wday] %>
                 <% end %>
               </td>
-              <td><%= attendance.check_box :changed, id: "remember_me" %></td>
-              <% if Date.current < day.worked_on %>
-                <td><%= attendance.time_field :started_at, readonly: true, class: "form-control" %></td>
-                <td><%= attendance.time_field :finished_at, readonly: true, class: "form-control" %></td>
-              <% else %>
-                <td><%= attendance.time_field :started_at, class: "form-control" %></td>
-                <td><%= attendance.time_field :finished_at, class: "form-control" %></td>
-              <% end %>
+              <td><%= attendance.check_box :next_day, id: "remember_me" %></td>
+                <% if Date.current < day.worked_on %>
+                  <td><%= attendance.time_field :started_at, readonly: true, class: "form-control" %></td>
+                  <td><%= attendance.time_field :finished_at, readonly: true, class: "form-control" %></td>
+                <% else %>
+                  <td><%= attendance.time_field :started_at, class: "form-control" %></td>
+                  <td><%= attendance.time_field :finished_at, class: "form-control" %></td>
+                <% end %>
               <td>
                 <% if day.started_at.present? && day.finished_at.present? %>
                   <%= working_times(day.started_at, day.finished_at) %>
                 <% end %>
               </td>
-              <td><%= attendance.text_field :note, class: "form-control" %></td>
-              <td><%= attendance.collection_select( :confirmation_mark, @superior, :name, :name, { include_blank: true }, { class: "form-control"} ) %></td>
+              <td>
+                <%= attendance.text_field :note, class: "form-control" %>
+                <%= attendance.hidden_field :mark_approval, value: "申請中" %>
+              </td>
+              <td><%= attendance.collection_select(:confirmation_mark, @superior, :name, :name, { include_blank: true }, { class: "form-control"}) %></td>
             </tr>     
           <% end %>
         <% end %>

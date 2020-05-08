@@ -36,7 +36,7 @@
   <% if logged_in? && current_user.superior? %>
     <div class="users-news">
       <p>
-        <% if @overtime_at >=1 %>
+        <% if @finished_at >=1 %>
           【所属部長承認申請のお知らせ】<%= link_to "#{@finished_at}件の通知があります。" , attendances_approval_info_user_path(@user), class: "change-attendance-show" %>
         <% else %>
           <span class="overtime-news">【所属部長承認申請のお知らせ】</span>
@@ -140,16 +140,12 @@
             </td>
             <td><%= day.worked_contents %></td>
             <td>
-              <div>
-                <% if day.overtime_mark.present? && day.change_at == true %>
-                  <%= day.overtime_mark %>【残業申請：<span class="mark"><%= day.mark_by_instructor %></span>】
-                <% elsif day.overtime_mark.present? %>
-                  <%= day.overtime_mark %>【残業申請：<span class="mark">申請中</span>】
-                <% end %>
-              </div>
-              <div>
-                <%= day.confirmation_mark %>【勤怠変更申請：<span class="mark"><%= day.mark_approval %></span>】
-              </div>
+              <% if day.overtime_mark.present? %>
+                <%= day.overtime_mark %><span class="mark">【残業申請：<%= day.mark_by_instructor %>】</span><br>
+              <% end %>
+              <% if day.confirmation_mark.present? %>
+                <%= day.confirmation_mark %><span class="mark">【勤怠変更申請：<%= day.mark_approval %>】</span>
+              <% end %>
             </td>
           </tr>
         <% end %>
@@ -164,7 +160,7 @@
           <td>
             <%= form_with(model: @user, local: true) do |f| %>
               <%= f.label "所属部長承認 未" %>
-                <%= f.collection_select( :finish_mark, @superior, :name, :name, { include_blank: true }, { class: "form-control"} ) %>
+                <%= f.collection_select( :finish_mark, @superior, :name, :name, {}, { class: "form-control"} ) %>
             <% end %>
           </td>
         </tr>

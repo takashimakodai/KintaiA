@@ -5,39 +5,39 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-      <%= form_with(model: @attendance, url: attendances_reply_approval_info_user_path(@attendance), local: true, method: :patch) do |f| %>
-        <% @user.each do |user| %>
-          <h1 class="modal-title">【<%= user.name %>】からの１ヶ月分の勤怠申請</h1>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-md-12">
-                <table class="table table-bordered table-striped table-condensed overwork-table">
-                  <thead class="overwork-table">
-                    <tr>
-                      <th>月</th>
-                      <th>指示者確認㊞</th>
-                      <th>変更</th>
-                      <th>勤怠を確認</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><%= l(@first_day, format: :mid) %></td>
-                      <td><%= f.select :mark_by_finish, Attendance.confirmation_marks.keys.to_a, { include_blank: true }, class: "form-control" %></td>
-                      <td><%= f.check_box :changed, id: "remember_me" %></td>
-                      <td><%= link_to "確認","#", class: "btn btn-primary" %></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            <% end %>
-          
-          <div class="center">
-            <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
+    <%= form_with(model: @attendance, url: attendances_reply_approval_info_user_path(@attendance), local: true, method: :patch) do |f| %>
+      <% @user.each do |user| %>
+        <h1 class="modal-title">【<%= user.name %>】からの１ヶ月分の勤怠申請</h1>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <table class="table table-bordered table-striped table-condensed overwork-table">
+                <thead class="overwork-table">
+                  <tr>
+                    <th>月</th>
+                    <th>指示者確認㊞</th>
+                    <th>変更</th>
+                    <th>勤怠を確認</th>
+                  </tr>
+                </thead>
+                
+                <tbody>
+                  <tr>
+                    <td><%= l(@first_day, format: :mid) %></td>
+                    <td><%= f.select :mark_by_finish, Attendance.confirmation_marks.keys.to_a, { include_blank: true }, class: "form-control" %></td>
+                    <td><%= f.check_box :changed, id: "remember_me" %></td>
+                    <td><%= link_to "確認", user_path, class: "btn btn-primary" %></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       <% end %>
-    </div>
+      <div class="center">
+        <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
+      </div>
+    <% end %>
   </div>
 </div>
 

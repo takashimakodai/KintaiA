@@ -1,9 +1,9 @@
 class Attendance < ApplicationRecord
   belongs_to :user
   
-  enum mark_by_instructor: { "申請中" => 1, "承認" => 2, "否認" => 3 }, _prefix: true      #残業承認
-  enum mark_approval: { "申請中" => 1, "承認" => 2, "否認" => 3 }, _prefix: true           #勤怠変更承認
-  enum mark_by_finish: { "申請中" => 1, "承認" => 2, "否認" => 3 }, _prefix: true          #最終承認
+  enum mark_by_instructor: { "申請中" => 1, "承認" => 2, "否認" => 3 }, _prefix: true      #overtime_mark残業承認
+  enum mark_approval: { "申請中" => 1, "承認" => 2, "否認" => 3 }, _prefix: true           #confirmation_mark勤怠変更承認
+  #enum mark_by_finish: { "申請中" => 1, "承認" => 2, "否認" => 3 }, _prefix: true          #最終承認
   
   validates :worked_on, presence: true 
   validates :note, length: { maximum: 50 }
