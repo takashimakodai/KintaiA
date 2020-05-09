@@ -24,6 +24,7 @@ Rails.application.routes.draw do
       get 'attendances/change_information'
       patch 'attendances/reply_change_info'
       get 'attendances/approval_info'
+      patch 'attendances/request_approval_info'
       patch 'attendances/reply_approval_info'
       get 'attendances/log_info'
       get 'attendances/csv_output'

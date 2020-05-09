@@ -27,9 +27,11 @@ class UsersController < ApplicationController
     all_attendance = Attendance.all
     @overtime_at = all_attendance.where.not(overtime_at: nil).where(mark_by_instructor: nil)\
                    .or(all_attendance.where.not(overtime_at: nil).where(mark_by_instructor: "申請中")).count
-    @finished_at = all_attendance.where.not(finished_at: nil).count
+    @finished_at = all_attendance.where.not(finished_at: nil).where(mark_approval: nil)\
+                   .or(all_attendance.where.not(finished_at: nil).where(mark_approval: "申請中")).count
+    @approval_at = all_attendance.where(mark_by_finish: "申請中").count
     @superior = User.where(superior: true).where.not(id: current_user)
-    @admin = User.where(superior: true).where.not(id: current_user).find_by(params[:id])
+    #@admin = User.where(superior: true).where.not(id: current_user).find_by(params[:id])
   end
 
   def new

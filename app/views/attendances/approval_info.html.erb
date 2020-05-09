@@ -24,18 +24,18 @@
                 <tbody>
                   <tr>
                     <td><%= l(@first_day, format: :mid) %></td>
-                    <td><%= f.select :mark_by_finish, Attendance.confirmation_marks.keys.to_a, { include_blank: true }, class: "form-control" %></td>
-                    <td><%= f.check_box :changed, id: "remember_me" %></td>
+                    <td><%= f.select :mark_by_finish, Attendance.mark_by_finishes.keys.to_a, {}, class: "form-control" %></td>
+                    <td><%= f.check_box :change_at, id: "remember_me" %></td>
                     <td><%= link_to "確認", user_path, class: "btn btn-primary" %></td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
+        <% end %>
+        <div class="center">
+          <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
         </div>
-      <% end %>
-      <div class="center">
-        <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
       </div>
     <% end %>
   </div>

@@ -10,14 +10,14 @@ class AttendancesController < ApplicationController
     @user = User.find(params[:user_id])
     @attendance =Attendance.find(params[:id])
     # 出勤時間が未登録であることを判定します。
-    if @attendance.started_at.nil?
-      if @attendance.update_attributes(started_at: Time.current.change(sec: 0))
+    if @attendance.started_at_before.nil?
+      if @attendance.update_attributes(started_at_before: Time.current.change(sec: 0))
         flash[:info] = "おはようございます！"
       else
         flash[:danger] = UPDATE_ERROR_MSG
       end
-    elsif @attendance.finished_at.nil?
-      if @attendance.update_attributes(finished_at: Time.current.change(sec: 0))
+    elsif @attendance.finished_at_before.nil?
+      if @attendance.update_attributes(finished_at_before: Time.current.change(sec: 0))
         flash[:info] = "お疲れ様でした。"
       else
         flash[:danger] = UPDATE_ERROR_MSG
@@ -75,9 +75,9 @@ class AttendancesController < ApplicationController
     attendance = Attendance.find(id)
       if item[:change_at] == "1"
         attendance.update_attributes(item)
-        flash[:success] = "更新しました。申請中の場合は再度登録が必要です。"
+        flash[:success] = "変更チェックした申請を登録しました。申請中の場合は再登録が必要です。"
       else
-        flash[:danger] = "変更マークをチェックして下さい。"
+        flash[:danger] = "変更チェックをして下さい。"
       end
     end
     redirect_to user_url(current_user)
@@ -89,31 +89,41 @@ class AttendancesController < ApplicationController
     attendance = Attendance.find(id)
       if item[:change_at] == "1"
         attendance.update_attributes(item)
-        flash[:success] = "更新しました。申請中の場合は再度登録が必要です。"
+        flash[:success] = "変更チェックした申請を登録しました。申請中の場合は再登録が必要です。"
       else
-        flash[:danger] = "変更マークをチェックして下さい。"
+        flash[:danger] = "変更チェックをして下さい。"
       end
     end
     redirect_to user_url(current_user)
   end
   
-  # 最後の１ヶ月承認
+  # 最終承認モーダル
   def approval_info
-    @user = User.joins(:attendances).group("users.id").where.not(attendances: {finished_at: nil})
+    @user = User.joins(:attendances).group("users.id").where.not(attendances: {mark_by_finish: nil})
     @attendance = Attendance.find(params[:id])
     @first_day = Date.current.beginning_of_month
   end
-  
-  # 最後の1ヶ月承認返信
-  def reply_approval_info
-    reply_approval_params.each do |id, item|
-    attendance = Attendance.find(id)
-      if attendance.update_attributes(item)
-        flash[:success] = "申請に返信しました"
+ 
+  # 最終申請
+  def request_approval_info
+    @attendance = Attendance.find(params[:id])
+      if @attendance.update_attributes(approval_params)
+        flash[:success] = "最終申請しました。"
       else
-        flash[:danger] = UPDATE_ERROR_MSG
+        flash[:danger] = "最終申請に失敗しました。"
       end
-    end
+    redirect_to user_url(current_user)
+  end
+  
+  # 最後承認返信
+  def reply_approval_info
+    @attendance = Attendance.find(params[:id])
+      if @attendance.update_attributes(reply_approval_params)
+        flash[:success] = "変更チェックした申請を登録しました。申請中の場合は再登録が必要です。"
+      else
+        flash[:danger] = "変更チェックをして下さい。"
+      end
+    redirect_to user_url(current_user)
   end
   
   # 勤怠ログ 
@@ -128,6 +138,7 @@ class AttendancesController < ApplicationController
     end
   end
   
+  # 勤怠変更申請
   def update_one_month
     ActiveRecord::Base.transaction do # トランザクションを開始します。
       attendances_params.each do |id, item|
@@ -161,9 +172,13 @@ class AttendancesController < ApplicationController
     def reply_change_params
       params.require(:user).permit(attendances: [:mark_approval, :change_at])[:attendances]
     end
+    # 最終申請
+    def approval_params
+      params.require(:attendance).permit(:finish_mark, :mark_by_finish)
+    end
     # 最終承認
-    def reply_approval_info
-      params.require(:user).permit(attendances: :mark_by_finish)[:attendances]
+    def reply_approval_params
+      params.require(:attendance).permit(:finish_mark, :mark_by_finish, :change_at)
     end
     
     # 管理権限者、または現在ログインしているユーザーを許可します。

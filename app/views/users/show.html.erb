@@ -1,5 +1,4 @@
 <% provide(:title, @user.name) %>
-<%#= render 'shared/error_messages_at', object: @attendance %>
 
 <% if logged_in? && current_user.admin? %>
   <div class="center jumbotron">
@@ -36,15 +35,15 @@
   <% if logged_in? && current_user.superior? %>
     <div class="users-news">
       <p>
-        <% if @finished_at >=1 %>
-          【所属部長承認申請のお知らせ】<%= link_to "#{@finished_at}件の通知があります。" , attendances_approval_info_user_path(@user), class: "change-attendance-show" %>
+        <% if @approval_at >=1 %>
+          【所属部長承認申請のお知らせ】<%= link_to "#{@approval_at}件の通知があります。" , attendances_approval_info_user_path(@user), class: "change-attendance-show" %>
         <% else %>
           <span class="overtime-news">【所属部長承認申請のお知らせ】</span>
         <% end %>
       </p>
       <p>
         <% if @finished_at >= 1 %>
-          【勤怠変更申請のお知らせ】<%= link_to "#{@finished_at}件の通知があります。" , attendances_change_information_user_path(@user), class: "change-attendance-show" %>
+          【勤怠変更申請のお知らせ】<%= link_to "#{@finished_at}件の通知があります。" , attendances_change_information_user_path(@user), remote: true, class: "change-attendance-show" %>
         <% else %>
           <span class="overtime-news">【勤怠変更申請のお知らせ】</span>
         <% end %>
@@ -112,15 +111,27 @@
                 <%= $days_of_the_week[day.worked_on.wday] %>
               <% end %>
             </td>
-            <td><%= l(day.started_at, format: :hour) if day.started_at.present? %></td>
-            <td><%= l day.started_at.floor_to(15.minutes), format: :minutes if day.started_at.present? %></td>
+            <td>
+              <%= l(day.started_at, format: :hour) if day.started_at.present? %>
+              <%= l(day.started_at_before, format: :hour) if day.started_at_before.present? && day.started_at.blank? %>
+            </td>
+            <td>
+              <%= l day.started_at.floor_to(15.minutes), format: :minutes if day.started_at.present? %>
+              <%= l day.started_at_before.floor_to(15.minutes), format: :minutes if day.started_at_before.present? && day.started_at.blank? %>
+            </td>
             <td>
               <% if btn_text = attendance_state(day) %>
                 <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-block btn-primary" %>
               <% end %>
             </td>
-            <td><%= l(day.finished_at, format: :hour) if day.finished_at.present? %></td>
-            <td><%= l day.finished_at.floor_to(15.minutes), format: :minutes if day.finished_at.present? %></td>
+            <td>
+              <%= l(day.finished_at, format: :hour) if day.finished_at.present? %>
+              <%= l(day.finished_at_before, format: :hour) if day.finished_at_before.present? && day.finished_at.blank? %>
+            </td>
+            <td>
+              <%= l day.finished_at.floor_to(15.minutes), format: :minutes if day.finished_at.present? %>
+              <%= l day.finished_at_before.floor_to(15.minutes), format: :minutes if day.finished_at_before.present? && day.finished_at.blank? %>
+            </td>
             <td></td>
             <td>
               <% if day.started_at.present? && day.finished_at.present? %>
@@ -157,10 +168,16 @@
           <td colspan="5">総合勤務時間</td>
           <td colspan="2">累計在社時間</td>
           <td rowspan="4"colspan="4"></td>
-          <td>
-            <%= form_with(model: @user, local: true) do |f| %>
-              <%= f.label "所属部長承認 未" %>
-                <%= f.collection_select( :finish_mark, @superior, :name, :name, {}, { class: "form-control"} ) %>
+          <td rowspan="2">
+            <%= form_with(model: @attendance, url: attendances_request_approval_info_user_path(@attendance), local: true) do |f| %>
+              <% if @attendance.mark_by_finish.present? %>
+                <span class="mark_finish">所属部長承認【<%= @attendance.mark_by_finish %>】</span>
+              <% else %>
+                <span class="mark_finish">所属部長承認 【未】</span>
+              <% end %>
+              <%= f.collection_select(:finish_mark, @superior, :name, :name, {}, { class: "form-control"}) %><br>
+              <%= f.hidden_field :mark_by_finish, value: "申請中" %>
+              <%= f.submit "申請", class: "btn btn-block btn-primary" %>
             <% end %>
           </td>
         </tr>
@@ -168,7 +185,6 @@
           <td colspan="4"><%= @attendances.count %></td>
           <td colspan="5"><%= format_basic_info(@user.work_time).to_f * @worked_sum %></td>
           <td colspan="2"><%= format("%.2f", @total_working_times.to_f) %></td>
-          <td><%= link_to "申請", "#",class: "btn btn-block btn-primary" %></td>
         </tr>
       </tfoot>    
     </table>
@@ -178,4 +194,4 @@
 <!--モーダルウインドウ表示-->
 <div id="edit_overtime_info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="news_overtime" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
-
+<div id="change_information" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
