@@ -5,62 +5,59 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-     <%= form_with(model: @user, url: attendances_reply_overtime_user_path(@attendance), local: true, method: :patch) do |f| %>
-     
-       <% @user.each do |user| %>
+    <%= form_with(model: @user, url: attendances_reply_overtime_user_path(@attendance), local: true, method: :patch) do |f| %>
+      <% @user.each do |user| %>
       <h1 class="modal-title">【<%= user.name %>】からの残業申請</h1>
-    <div class="modal-body">
-      <div class="row">
-        <div class="col-md-12">
-        <table class="table table-bordered table-striped table-condensed overwork-table">
-          <thead class="overwork-table">
-            <tr>
-              <th>日付</th>
-              <th>曜日</th>
-              <th>終了予定時間</th>
-              <th>指定勤務終了時間</th>
-              <th>時間外時間</th>
-              <th>業務処理内容</th>
-              <th>指示者確認㊞</th>
-              <th>変更</th>
-              <th>勤怠を確認</th>
-            </tr>
-           </thead>
-           <% @attendance.each do |overtime| %>
-             <%= f.fields_for "attendances[]", overtime do |i| %>
-               <% if overtime.user_id == user.id %>
-                 <%# if overtime.mark_by_instructor.nil? || overtime.mark_by_instructor == "申請中" %>
-           <tbody>
-             <tr>
-               <td><%= l(overtime.worked_on, format: :short) %></td>
-               <td>
-                 <% if overtime.worked_on.wday == 0 %>
-                   <div class= "sunday"><%= $days_of_the_week[overtime.worked_on.wday] %></div>
-                 <% elsif overtime.worked_on.wday == 6 %>
-                   <div class="saturday"><%= $days_of_the_week[overtime.worked_on.wday] %></div>
-                 <% else %>
-                   <%= $days_of_the_week[overtime.worked_on.wday] %>
-                 <% end %>
-               </td>
-               <td><%= format_basic_info(overtime.overtime_at) %></td>
-               <td><%= format_basic_info(user.designated_work_end_time) %></td>
-               <td><%= working_times(user.designated_work_end_time.floor_to(15.minutes), overtime.overtime_at.floor_to(15.minutes)) %></td>
-               <td><%= overtime.worked_contents %></td>
-               <td><%= i.select :mark_by_instructor, Attendance.mark_by_instructors.keys.to_a,{}, class: "form-control" %></td>
-               <td><%= i.check_box :change_at, id: "remember-me" %></td>
-               <td><%= link_to "確認", user_path, class: "btn btn-primary" %></td>
-             </tr>
-             <%# end %>
-             <% end %>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <table class="table table-bordered table-striped table-condensed overwork-table">
+                <thead class="overwork-table">
+                  <tr>
+                    <th>日付</th>
+                    <th>曜日</th>
+                    <th>終了予定時間</th>
+                    <th>指定勤務終了時間</th>
+                    <th>時間外時間</th>
+                    <th>業務処理内容</th>
+                    <th>指示者確認㊞</th>
+                    <th>変更</th>
+                    <th>勤怠を確認</th>
+                  </tr>
+                </thead>
+                <% @attendance.each do |overtime| %>
+                  <%= f.fields_for "attendances[]", overtime do |i| %>
+                    <% if overtime.user_id == user.id && overtime.mark_by_instructor == "申請中" %>
+                      <tbody>
+                        <tr>
+                          <td><%= l(overtime.worked_on, format: :short) %></td>
+                          <td>
+                            <% if overtime.worked_on.wday == 0 %>
+                              <div class= "sunday"><%= $days_of_the_week[overtime.worked_on.wday] %></div>
+                            <% elsif overtime.worked_on.wday == 6 %>
+                              <div class="saturday"><%= $days_of_the_week[overtime.worked_on.wday] %></div>
+                            <% else %>
+                              <%= $days_of_the_week[overtime.worked_on.wday] %>
+                            <% end %>
+                          </td>
+                          <td><%= format_basic_info(overtime.overtime_at) %></td>
+                          <td><%= format_basic_info(user.designated_work_end_time) %></td>
+                          <td><%= working_times(user.designated_work_end_time.floor_to(15.minutes), overtime.overtime_at.floor_to(15.minutes)) %></td>
+                          <td><%= overtime.worked_contents %></td>
+                          <td><%= i.select :mark_by_instructor, Attendance.mark_by_instructors.keys.to_a,{}, class: "form-control" %></td>
+                          <td><%= i.check_box :change_at, id: "remember-me" %></td>
+                          <td><%= link_to "確認", user_path, class: "btn btn-primary" %></td>
+                        </tr>
+                      </tbody>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              </table>
             <% end %>
-            <% end %>
-           </tbody>
-           </table>
-           <% end %>
-              <div class="center">
-                <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
-              </div>
-        <% end %>
+            <div class="center">
+              <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
+            </div>
+          <% end %>
         </div>
       </div>
     </div>

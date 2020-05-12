@@ -48,13 +48,13 @@ class AttendancesController < ApplicationController
  
   # 残業申請のお知らせモーダル
   def news_overtime
-    @user = User.joins(:attendances).group("users.id").where.not(attendances: {overtime_at: nil})
+    @user = User.joins(:attendances).group("users.id").where(attendances: {overtime_mark: current_user.name}).where(attendances: {mark_by_instructor: "申請中"})
     @attendance = Attendance.where.not(overtime_at: nil)
   end
   
   # 勤怠変更申請モーダル
   def change_information
-    @user = User.joins(:attendances).group("users.id").where.not(attendances: {finished_at: nil})
+    @user = User.joins(:attendances).group("users.id").where(attendances: {confirmation_mark: current_user.name}).where(attendances: {mark_approval: "申請中"})
     @attendance = Attendance.where.not(finished_at: nil)
   end
   
@@ -72,13 +72,15 @@ class AttendancesController < ApplicationController
   # 残業申請への返信
   def reply_overtime
     reply_overtime_params.each do |id, item|
-    attendance = Attendance.find(id)
+      attendance = Attendance.find(id)
       if item[:change_at] == "1"
         attendance.update_attributes(item)
         flash[:success] = "変更チェックした申請を登録しました。申請中の場合は再登録が必要です。"
-      else
-        flash[:danger] = "変更チェックをして下さい。"
       end
+    end
+    
+    if flash[:success].blank?
+      flash[:danger] = "変更チェックが必要です。"
     end
     redirect_to user_url(current_user)
   end
@@ -86,20 +88,22 @@ class AttendancesController < ApplicationController
   # 勤怠変更申請への返信
   def reply_change_info
     reply_change_params.each do |id, item|
-    attendance = Attendance.find(id)
-      if item[:change_at] == "1"
+      attendance = Attendance.find(id)
+      if item[:change_at] == "1" || item[:change_at].present?
         attendance.update_attributes(item)
         flash[:success] = "変更チェックした申請を登録しました。申請中の場合は再登録が必要です。"
-      else
-        flash[:danger] = "変更チェックをして下さい。"
       end
+    end
+    
+    if flash[:success].blank?
+      flasn[:danger] = "変更チェックが必要です。"
     end
     redirect_to user_url(current_user)
   end
   
   # 最終承認モーダル
   def approval_info
-    @user = User.joins(:attendances).group("users.id").where.not(attendances: {mark_by_finish: nil})
+    @user = User.joins(:attendances).group("users.id").where(attendances: {finish_mark: current_user.name}).where(attendances: {mark_by_finish: "申請中"})
     @attendance = Attendance.find(params[:id])
     @first_day = Date.current.beginning_of_month
   end
@@ -115,7 +119,7 @@ class AttendancesController < ApplicationController
     redirect_to user_url(current_user)
   end
   
-  # 最後承認返信
+  # 最終申請返信
   def reply_approval_info
     @attendance = Attendance.find(params[:id])
       if @attendance.update_attributes(reply_approval_params)
@@ -146,10 +150,10 @@ class AttendancesController < ApplicationController
         attendance.update_attributes!(item)
       end
     end
-    flash[:success] = "1ヶ月分の勤怠情報を更新しました。"
+    flash[:success] = "勤怠情報の変更申請をしました。"
     redirect_to user_url(date: params[:date])
   rescue ActiveRecord::RecordInvalid # トランザクションによるエラーの分岐です。
-    flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
+    flash[:danger] = "無効な入力データがあった為、すべての変更申請をキャンセルしました。"
     redirect_to attendances_edit_one_month_user_url(date: params[:date])
   end
 
@@ -176,7 +180,7 @@ class AttendancesController < ApplicationController
     def approval_params
       params.require(:attendance).permit(:finish_mark, :mark_by_finish)
     end
-    # 最終承認
+    # 最終申請承認
     def reply_approval_params
       params.require(:attendance).permit(:finish_mark, :mark_by_finish, :change_at)
     end

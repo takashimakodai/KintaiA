@@ -35,22 +35,28 @@
   <% if logged_in? && current_user.superior? %>
     <div class="users-news">
       <p>
-        <% if @approval_at >=1 %>
-          【所属部長承認申請のお知らせ】<%= link_to "#{@approval_at}件の通知があります。" , attendances_approval_info_user_path(@user), class: "change-attendance-show" %>
+        <% if current_user.name == "上長A" && @finish_acount > 0 %>
+          【所属部長承認申請のお知らせ】<%= link_to "#{@finish_acount}件の通知があります。" , attendances_approval_info_user_path(@user), remote: true, class: "change-attendance-show" %>
+        <% elsif current_user.name == "上長B" && @finish_bcount > 0 %>
+          【所属部長承認申請のお知らせ】<%= link_to "#{@finish_bcount}件の通知があります。" , attendances_approval_info_user_path(@user), remote: true, class: "change-attendance-show" %>
         <% else %>
           <span class="overtime-news">【所属部長承認申請のお知らせ】</span>
         <% end %>
       </p>
       <p>
-        <% if @finished_at >= 1 %>
-          【勤怠変更申請のお知らせ】<%= link_to "#{@finished_at}件の通知があります。" , attendances_change_information_user_path(@user), remote: true, class: "change-attendance-show" %>
+        <% if current_user.name == "上長A" && @confirmation_acount > 0 %>
+          【勤怠変更申請のお知らせ】<%= link_to "#{@confirmation_acount}件の通知があります。" , attendances_change_information_user_path(@user), remote: true, class: "change-attendance-show" %>
+        <% elsif current_user.name == "上長B" && @confirmation_bcount > 0 %>
+          【勤怠変更申請のお知らせ】<%= link_to "#{@confirmation_bcount}件の通知があります。" , attendances_change_information_user_path(@user), remote: true, class: "change-attendance-show" %>
         <% else %>
           <span class="overtime-news">【勤怠変更申請のお知らせ】</span>
         <% end %>
       </P>
       <p>
-        <% if @overtime_at >= 1 %>
-          【残業申請のお知らせ】<%= link_to "#{@overtime_at}件の通知があります。", attendances_news_overtime_user_path(@user), remote: true, class: "change-attendance-show" %>
+        <% if current_user.name == "上長A" && @overtime_acount > 0 %>
+          【残業申請のお知らせ】<%= link_to "#{@overtime_acount}件の通知があります。", attendances_news_overtime_user_path(@user), remote: true, class: "change-attendance-show" %>
+        <% elsif current_user.name == "上長B" && @overtime_bcount > 0 %>
+          【残業申請のお知らせ】<%= link_to "#{@overtime_bcount}件の通知があります。", attendances_news_overtime_user_path(@user), remote: true, class: "change-attendance-show" %>
         <% else %>
           <span class="overtime-news">【残業申請のお知らせ】</span>
         <% end %>
@@ -195,3 +201,4 @@
 <div id="edit_overtime_info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="news_overtime" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="change_information" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="approval_info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

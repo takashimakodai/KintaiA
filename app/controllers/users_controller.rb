@@ -23,15 +23,21 @@ class UsersController < ApplicationController
   
   def show
     @attendance = Attendance.find(params[:id])
-    @worked_sum = @attendances.where.not(started_at: nil).count
+    @worked_sum = @attendances.where.not(started_at: nil).size
     all_attendance = Attendance.all
-    @overtime_at = all_attendance.where.not(overtime_at: nil).where(mark_by_instructor: nil)\
-                   .or(all_attendance.where.not(overtime_at: nil).where(mark_by_instructor: "申請中")).count
-    @finished_at = all_attendance.where.not(finished_at: nil).where(mark_approval: nil)\
-                   .or(all_attendance.where.not(finished_at: nil).where(mark_approval: "申請中")).count
-    @approval_at = all_attendance.where(mark_by_finish: "申請中").count
+    # 残業申請上長件数
+    @overtime_acount = all_attendance.where(mark_by_instructor: "申請中").where(overtime_mark: "上長A").size
+    @overtime_bcount = all_attendance.where(mark_by_instructor: "申請中").where(overtime_mark: "上長B").size
+    # 勤怠変更申請件数
+    @confirmation_acount = all_attendance.where(mark_approval: "申請中").where(confirmation_mark: "上長A").size
+    @confirmation_bcount = all_attendance.where(mark_approval: "申請中").where(confirmation_mark: "上長B").size
+    # 最終申請上長確認と件数
+    @finish_acount = all_attendance.where(mark_by_finish: "申請中").where(finish_mark: "上長A").size
+    @finish_bcount = all_attendance.where(mark_by_finish: "申請中").where(finish_mark: "上長B").size
+    @approval_at = all_attendance.where(mark_by_finish: "申請中").size
+    # 上長確認
     @superior = User.where(superior: true).where.not(id: current_user)
-    #@admin = User.where(superior: true).where.not(id: current_user).find_by(params[:id])
+    @current_superior = User.where(superior: true).where(id: current_user).find_by(params[:name])
   end
 
   def new

@@ -7,6 +7,8 @@ class Attendance < ApplicationRecord
   
   validates :worked_on, presence: true 
   validates :note, length: { maximum: 50 }
+  # チェックチェックボックスがオンか確認
+  # validates :change_at, acceptance: true
   
   # 出勤時間が存在しない場合、退勤時間は無効(NO.7)
   validate :finished_at_is_invalid_without_a_started_at
@@ -58,6 +60,13 @@ class Attendance < ApplicationRecord
     errors.add(:overtime_at, "が必要です") if overtime_at.blank? && overtime_mark.present?
   end
   
+   # 残業承認にて変更チェックがない場合は無効
+   validate :change_at_is_invalid_without_mark_by_instructor
+  
+   def change_at_is_invalid_without_mark_by_instructor 
+     errors.add(:overtime_at, "が必要です") if mark_by_instructor.present? && change_at == false
+   end
+  
   # 勤怠変更にて支持者確認がない場合は無効（出退勤有り）
   validate :confirmation_mark_is_invalid_without_started_at_and_finished_at_present
   
@@ -83,6 +92,7 @@ class Attendance < ApplicationRecord
       errors.add(:change_at, "が必要です") if change_at == false
     end
   end
+
 end
 
   
