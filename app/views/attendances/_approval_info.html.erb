@@ -21,14 +21,20 @@
                   </tr>
                 </thead>
                 
-                <tbody>
-                  <tr>
-                    <td><%= l(@first_day, format: :mid) %></td>
-                    <td><%= f.select :mark_by_finish, Attendance.mark_by_finishes.keys.to_a, {}, class: "form-control" %></td>
-                    <td><%= f.check_box :change_at, id: "remember_me" %></td>
-                    <td><%= link_to "確認", user_path, class: "btn btn-primary" %></td>
-                  </tr>
-                </tbody>
+                <% @attendance.each do |day| %>
+                  <%= f.fields_for "attendances[]", day do |i| %>
+                    <% if day.user_id == user.id && day.mark_by_finish == "申請中" %>
+                      <tbody>
+                        <tr>
+                          <td><%= l(day.worked_on, format: :mid) if day.appl_month.present? %></td>
+                          <td><%= i.select :mark_by_finish, Attendance.mark_by_finishes.keys.to_a, {}, class: "form-control" %></td>
+                          <td><%= i.check_box :change_at, id: "remember_me" %></td>
+                          <td><%= link_to "確認", user_path(user.id, date: day.worked_on), class: "btn btn-primary" %></td>
+                        </tr>
+                      </tbody>
+                    <% end %>
+                  <% end %>
+                <% end %>
               </table>
             </div>
           </div>

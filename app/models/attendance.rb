@@ -75,12 +75,13 @@ class Attendance < ApplicationRecord
       errors.add(:mark_approval, "が必要です") if started_at.present? && finished_at.present?
     end
   end
-  # 勤怠変更にて支持者確認がない場合は無効（出退勤無し）
-  validate :confirmation_mark_or_note_is_invalid_without_started_at_and_finished_at_blank
   
-  def confirmation_mark_or_note_is_invalid_without_started_at_and_finished_at_blank
-    if confirmation_mark.present? || note.present?
-      errors.add(:mark_approval, "が必要です") if started_at.blank? && finished_at.blank?
+  # 勤怠変更にて支持者確認がない場合は備考及び翌日は無効（出退勤無し）
+  validate :confirmation_mark_or_note_or_next_day_is_invalid_without_started_at_and_finished_at_blank
+  
+  def confirmation_mark_or_note_or_next_day_is_invalid_without_started_at_and_finished_at_blank 
+    if confirmation_mark.present? || note.present? || next_day.present?
+      errors.add(:confirmation_mark, "が必要です") if started_at.blank? && finished_at.blank?
     end
   end
   

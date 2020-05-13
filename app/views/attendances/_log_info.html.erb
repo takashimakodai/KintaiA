@@ -13,7 +13,7 @@
             <thead class="overwork-table">
               <%= form_with url: attendances_log_info_user_path, method: :get, local: true do |f| %>
                 <tr>
-                  <th><%= f.submit "検索年月選択",class: "btn btn-sm btn-primary" %></th>
+                  <th><%= f.submit "検索",class: "btn btn-sm btn-primary" %></th>
                   <th><%= f.date_select :worked_on, { include_blank: true, 
                                                       discard_day: true,
                                                       date_separator: "-",
@@ -29,19 +29,19 @@
                   <th>変更後出社時間</th>
                   <th>変更後退社時間</th>
                   <th>指示者</th>
-                  <th>承認日</th>
                 </tr>
               </thead>
               <% @attendances.each do |day| %>
                 <tbody>
                   <tr>
-                    <td><%= l(day.worked_on, format: :defaults) %></td>
-                    <td><%#= l(day.change_started_at.floor_to(15.minutes), format: :time) %></td>
-                    <td><%#= l(day.change_finished_at.floor_to(15.minutes), format: :time) %></td>
-                    <td><%#= l(day.started_at.floor_to(15.minutes), format: :time) %></td>
-                    <td><%= l(day.started_at, format: :time) if day.started_at.present? %></td>
-                    <td><%= day.confirmation_mark %></td>
-                    <td><%= l(day.updated_at, format: :longs) %></td>
+                    <% if day.finished_at.present? %> 
+                      <td><%= l(day.worked_on, format: :defaults) %></td>
+                      <td><%= l(day.started_at_before, format: :time) if day.started_at_before.present? %></td>
+                      <td><%= l(day.finished_at_before, format: :time) if day.finished_at_before.present? %></td>
+                      <td><%= l(day.started_at, format: :time) if day.started_at.present? %></td>
+                      <td><%= l(day.finished_at, format: :time) if day.finished_at.present? %></td>
+                      <td><%= day.confirmation_mark %></td>
+                    <% end %>
                   </tr>
                 </tbody>
               <% end %>

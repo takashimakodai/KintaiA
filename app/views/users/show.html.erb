@@ -65,9 +65,15 @@
   <% end %>
   
   <div class="btn-users-show">
-    <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(@user), class: "btn btn-primary" %>
-    <%= link_to "CSV出力", attendances_csv_output_user_path(@user, format: :csv), class: "btn btn-primary" %>
-    <%= link_to "勤怠修正ログ(承認済)", attendances_log_info_user_path, class: "btn btn-primary" %>
+    <% if @user.id == current_user.id %>
+      <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(@user, date: @first_day), class: "btn btn-primary" %>
+      <%= link_to "CSV出力", attendances_csv_output_user_path(@user, format: :csv), class: "btn btn-primary" %>
+      <%= link_to "勤怠修正ログ(承認済)", attendances_log_info_user_path, remote: true, class: "btn btn-primary" %>
+    <% else %>
+      <%= link_to "勤怠を編集", "#", disabled: true, class: "btn btn-primary" %>
+      <%= link_to "CSV出力", "#", disabled: true, class: "btn btn-primary" %>
+      <%= link_to "勤怠修正ログ(承認済)", "#", disabled: true, class: "btn btn-primary" %>
+    <% end %>
   </div> 
   
   <div>
@@ -106,7 +112,13 @@
       <tbody>
         <% @attendances.each do |day| %>
           <tr>
-            <td><%= link_to "残業申請", attendances_edit_overtime_info_user_path(@user, date: day.worked_on), remote: true, class: "btn btn-primary" %></td> 
+            <td>
+              <% if Date.current < day.worked_on || @user.id != current_user.id %>
+                <%= link_to "残業申請","#", disabled: true, class: "btn btn-primary" %>
+              <% else %>
+                <%= link_to "残業申請", attendances_edit_overtime_info_user_path(@user, date: day.worked_on), remote: true, class: "btn btn-primary" %>
+              <% end %>
+            </td> 
             <td><%= l(day.worked_on, format: :short) %></td>
              <td>
               <% if day.worked_on.wday == 0 %>
@@ -127,7 +139,11 @@
             </td>
             <td>
               <% if btn_text = attendance_state(day) %>
-                <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-block btn-primary" %>
+                <% if @user.id != current_user.id %> 
+                  <%= link_to "#{btn_text}", "#", disabled: true, class: "btn btn-block btn-primary" %>
+                <% else %>
+                  <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-block btn-primary" %>
+                <% end %>
               <% end %>
             </td>
             <td>
@@ -175,15 +191,26 @@
           <td colspan="2">累計在社時間</td>
           <td rowspan="4"colspan="4"></td>
           <td rowspan="2">
-            <%= form_with(model: @attendance, url: attendances_request_approval_info_user_path(@attendance), local: true) do |f| %>
-              <% if @attendance.mark_by_finish.present? %>
-                <span class="mark_finish">所属部長承認【<%= @attendance.mark_by_finish %>】</span>
-              <% else %>
-                <span class="mark_finish">所属部長承認 【未】</span>
-              <% end %>
-              <%= f.collection_select(:finish_mark, @superior, :name, :name, {}, { class: "form-control"}) %><br>
-              <%= f.hidden_field :mark_by_finish, value: "申請中" %>
-              <%= f.submit "申請", class: "btn btn-block btn-primary" %>
+            <%= form_with(model: @user, url: attendances_request_approval_info_user_path(@attendance), local: true) do |f| %>
+              <% @attendances.each do |day| %>
+                <%= f.fields_for "attendances[]", day do |i| %>
+                  <% if day.mark_by_finish.present? %>
+                    <span class="mark_finish">所属部長承認【<%= day.mark_by_finish %>】</span>
+                  <% else %>
+                    <span class="mark_finish">所属部長承認 【未】</span>
+                  <% end %>
+                  
+                  <%= i.collection_select(:finish_mark, @superior, :name, :name, {}, { class: "form-control"}) %><br>
+                  <%= i.hidden_field :mark_by_finish, value: "申請中" %>
+                  <%= i.hidden_field :appl_month, :value => @first_day %>
+                  <% if @user.id == current_user.id %>
+                    <%= f.submit "申請", class: "btn btn-block btn-primary" %>
+                  <% else %>
+                    <%= f.submit "申請", disabled: true, class: "btn btn-block btn-primary" %>
+                  <% end %>
+                <% end %>
+                <% break %>
+              <% end %> 
             <% end %>
           </td>
         </tr>
@@ -202,3 +229,4 @@
 <div id="news_overtime" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="change_information" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="approval_info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="log_info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

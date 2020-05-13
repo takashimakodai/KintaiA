@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy]
   before_action :admin_user, only: [:index, :destroy]
   #before_action :correct_user, only: [:edit, :update]
-  before_action :admin_or_correct_user, only: :show 
+  #before_action :admin_or_correct_user, only: :show 
   before_action :set_one_month, only: :show
 
   def index
@@ -38,6 +38,10 @@ class UsersController < ApplicationController
     # 上長確認
     @superior = User.where(superior: true).where.not(id: current_user)
     @current_superior = User.where(superior: true).where(id: current_user).find_by(params[:name])
+    # 最終申請
+    #@first_day = Date.current.beginning_of_month
+    #@day_last = @day_start.end_of_month
+    #@dates = @day_start..@day_last 
   end
 
   def new
