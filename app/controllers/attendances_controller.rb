@@ -61,11 +61,10 @@ class AttendancesController < ApplicationController
   # 残業申請
   def request_overtime
     @attendance = Attendance.find(params[:id])
-      if @attendance.finished_at.present? || @attendance.finished_at_before.present? 
-        @attendance.update_attributes(overtime_params)
+      if @attendance.update_attributes(overtime_params)
         flash[:success] = "残業申請しました。"
       else
-        flash[:danger] = "残業申請できません。退社時間及び指定勤務終了時間等を確認して下さい。"
+        flash[:danger] = "出社時間を入力して下さい。翌日扱いは時間の確認が必要です。"
       end
     redirect_to user_url(current_user)
   end

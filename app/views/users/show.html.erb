@@ -156,8 +156,11 @@
             </td>
             <td></td>
             <td>
-              <% if day.started_at.present? && day.finished_at.present? %>
+              <% if day.started_at.present? && day.finished_at.present? && day.next_day == false %>
                 <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+                <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
+              <% elsif day.started_at.present? && day.finished_at.present? && day.next_day == true %>
+                <%= str_times = working_nexttimes(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
                 <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
               <% end %>
             </td>
@@ -165,10 +168,10 @@
             <td><%= l(day.overtime_at, format: :hour) if day.overtime_at.present? %></td>
             <td><%= l day.overtime_at.floor_to(15.minutes), format: :minutes if day.overtime_at.present? %></td>
             <td>
-              <% if day.overtime_at.present? && day.next_day == true %>
-                <%= tomorrow_times(@user.designated_work_end_time.floor_to( 15.minutes), day.overtime_at.floor_to(15.minutes)) %>
-              <% elsif day.overtime_at.present? && day.next_day == false %>
-                <%= working_times(@user.designated_work_end_time.floor_to(15.minutes), day.overtime_at.floor_to(15.minutes)) %>
+              <% if day.finished_at.present? && day.next_day == false %> 
+                <%= today_times(@user.designated_work_end_time.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+              <% elsif day.finished_at.present? && day.next_day == true %>
+                <%= tomorrow_times(@user.designated_work_end_time.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
               <% end %>
             </td>
             <td><%= day.worked_contents %></td>

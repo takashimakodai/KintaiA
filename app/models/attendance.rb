@@ -28,37 +28,43 @@ class Attendance < ApplicationRecord
       errors.add(:finished_at, "が必要です") if finished_at.blank? && started_at.present?
     end
   end
-
+  
   def started_at_than_finished_at_fast_if_invalid
     if started_at.present? && finished_at.present?
       errors.add(:started_at, "より早い退勤時間は無効です") if started_at > finished_at
     end
   end
   
-  # 残業申請にて終了予定時間が指定勤務終了時間より早いのは無効
-  validate :overtime_at_than_designated_work_end_time_fast_if_invalid
-    
-  def overtime_at_than_designated_work_end_time_fast_if_invalid
-    if user.designated_work_end_time.present? && overtime_at.present? && next_day == false
-      errors.add(:overtime_at, "が不適切な時間です") if user.designated_work_end_time > overtime_at
-    end
+  # 残業申請には出社時間が必要です。
+  validate :overtime_at_is_invalid_without_a_started_at
+  
+  def overtime_at_is_invalid_without_a_started_at
+    errors.add(:started_at, "が必要です") if started_at.blank? && overtime_at.present?
   end
   
+  # 翌日扱いは、出社時間以降の入力は無効です。
+  validate :overtime_at
+  
+  def overtime_at
+    if overtime_at.present? && next_day == true
+      errors.add(:overtime_at, "が不適切です") if started_at.blank? && overtime_at.present?
+    end
+  end
   # 残業申請にて終了予定時間が退社時間より早いのは無効
-  validate :overtime_at_than_finished_at_fast_if_invalid
+  # validate :overtime_at_than_finished_at_fast_if_invalid
   
-  def overtime_at_than_finished_at_fast_if_invalid
-    if overtime_at.present? && finished_at.present? && next_day == false
-      errors.add(:overtime_at, "が不適切な時間です") if finished_at > overtime_at
-    end
-  end
+  # def overtime_at_than_finished_at_fast_if_invalid
+  #   if overtime_at.present? && finished_at.present? && next_day == false
+  #     errors.add(:overtime_at, "が不適切な時間です") if finished_at > overtime_at
+  #   end
+  # end
   
   # 残業申請にて終了予定時間が存在しない場合は無効
-  validate :overtime_at_is_invalid_without_a_overtime_mark
+  # validate :overtime_at_is_invalid_without_a_overtime_mark
     
-  def overtime_at_is_invalid_without_a_overtime_mark
-    errors.add(:overtime_at, "が必要です") if overtime_at.blank? && overtime_mark.present?
-  end
+  # def overtime_at_is_invalid_without_a_overtime_mark
+  #   errors.add(:overtime_at, "が必要です") if overtime_at.blank? && overtime_mark.present?
+  # end
   
    # 残業承認にて変更チェックがない場合は無効
    validate :change_at_is_invalid_without_mark_by_instructor
@@ -80,7 +86,7 @@ class Attendance < ApplicationRecord
   validate :confirmation_mark_or_note_or_next_day_is_invalid_without_started_at_and_finished_at_blank
   
   def confirmation_mark_or_note_or_next_day_is_invalid_without_started_at_and_finished_at_blank 
-    if confirmation_mark.present? || note.present? || next_day.present?
+    if confirmation_mark.present? || note.present? 
       errors.add(:confirmation_mark, "が必要です") if started_at.blank? && finished_at.blank?
     end
   end

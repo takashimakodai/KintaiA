@@ -15,8 +15,18 @@ module AttendancesHelper
     format("%.2f", (((finish - start) / 60) / 60.0))
   end
   
-  # 翌日の場合の時間を計算をします。
-  def tomorrow_times(start, finish)
-    format("%.2f", (((finish - start) / 60) / 60.0) + 24)
+  # 出勤時間と退勤時間を受け取り、在社時間を計算して返します。(翌日)
+  def working_nexttimes(start, finish)
+   format("%.2f", (((finish - start) / 60) / 60.0) + 24.0) 
   end
+  # 残業当日の場合の時間を計算して返します。false
+  def today_times(start, finish)
+    format("%.2f", (((finish - (start + (finish.beginning_of_day - start.beginning_of_day))) / 60) / 60.0))
+  end
+  
+  # 残業翌日のと場合の時間を計算して返します。
+  def tomorrow_times(start, finish)
+    format("%.2f", (((finish - (start + (finish.beginning_of_day - start.beginning_of_day))) / 60) / 60.0) + 24.0)
+  end
+  
 end
