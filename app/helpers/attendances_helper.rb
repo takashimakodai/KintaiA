@@ -19,6 +19,7 @@ module AttendancesHelper
   def working_nexttimes(start, finish)
    format("%.2f", (((finish - start) / 60) / 60.0) + 24.0) 
   end
+  
   # 残業当日の場合の時間を計算して返します。false
   def today_times(start, finish)
     format("%.2f", (((finish - (start + (finish.beginning_of_day - start.beginning_of_day))) / 60) / 60.0))

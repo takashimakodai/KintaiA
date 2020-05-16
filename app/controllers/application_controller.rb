@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
 
   $days_of_the_week = %w{日 月 火 水 木 金 土}
 
-  # beforフィルター
 
   # paramsハッシュからユーザーを取得します。
   def set_user

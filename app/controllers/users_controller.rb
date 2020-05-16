@@ -1,9 +1,10 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy]
-  before_action :admin_user, only: [:index, :destroy]
+  before_action :admin_user, only: [:index, :destroy, :currently_working, :basic_information]
   #before_action :correct_user, only: [:edit, :update]
-  #before_action :admin_or_correct_user, only: :show 
+  before_action :admin_or_correct_user, only: [:edit, :update] 
+  before_action :superior_or_correct_user, only: :show
   before_action :set_one_month, only: :show
 
   def index
@@ -79,7 +80,10 @@ class UsersController < ApplicationController
 
    # 出勤社員一覧
   def currently_working
-    @attendance = Attendance.where.not(started_at: nil).where(finished_at: nil)
+    @attendance = Attendance.where.not(started_at_before: nil).where(finished_at_before: nil)
+  end
+  
+  def basic_information
   end
 
   private
@@ -111,8 +115,17 @@ class UsersController < ApplicationController
     
      # 管理権限者、または現在ログインしているユーザーを許可します。
     def admin_or_correct_user
-      @user = User.find(params[:user_id]) if @user.blank?
+      @user = User.find(params[:id]) if @user.blank?
       unless current_user?(@user) || current_user.admin?
+        flash[:danger] = "閲覧権限がありません。"
+        redirect_to(root_url)
+      end
+    end
+    
+     # 上長者、または現在ログインしているユーザーを許可します。
+    def superior_or_correct_user
+      @user = User.find(params[:id]) if @user.blank?
+      unless current_user?(@user) || current_user.superior?
         flash[:danger] = "閲覧権限がありません。"
         redirect_to(root_url)
       end

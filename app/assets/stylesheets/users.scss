@@ -159,3 +159,26 @@
   margin-bottom: -25px;
 }
 
+/* 終了予定時間説明 */
+.finishtime-show {
+  display: block;
+  text-align: left;
+  font-size: 0.9em;
+}
+
+/* 残業計算 */
+.finish-workcount {
+  font-size: 0.3em;
+}
+
+/* ユーザー登録初期値 */
+.fast-form {
+  color: red;
+  font-size: 0.9em;
+}
+
+/* 当日の勤怠編集設定 */
+.finished-at-before {
+  font-size: 0.9em;
+}
+

@@ -1,0 +1,67 @@
+<h1>勤怠ログ</h1>
+<div class="row">
+  <div class="col-md-12">
+    <table class="table table-bordered table-striped table-condensed overwork-table">
+      <%= form_with url: attendances_log_info_user_path, method: :get, local: true do |f| %>
+        <thead class="overwork-table">
+          <tr>
+            <% if @user.id == current_user.id %>
+              <th><%= f.submit "検索",class: "btn btn-sm btn-block btn-primary" %></th>
+            <% else %>
+              <th><%= f.submit "検索", disabled: true, class: "btn btn-sm btn-block btn-primary" %></th>
+            <% end %>
+            <th><%= f.date_select :worked_on, { include_blank: true,
+                                                    discard_day: true,
+                                                    date_separator: "-",
+                                                    use_month_numbers: true,
+                                                    start_year: Date.today.year,
+                                                    end_year: @attendances.first.try(:worked_on).try(:year)} %>
+            </th>
+          </tr>
+          <tr>
+            <th>日付</th>
+            <th>変更前出社時間<br>(出勤ボタン登録時間)</th>
+            <th>変更前退社時間<br>(退勤ボタン登録時間)</th>
+            <th>変更後出社時間</th>
+            <th>変更後退社時間</th>
+            <th>指示者</th>
+          </tr>
+        </thead>
+        
+        <% @attendances.each do |day| %>
+          <tbody>
+            <tr>
+              <% if day.finished_at.present? && day.mark_approval != "申請中" %> 
+                <td><%= l(day.worked_on, format: :defaults) %></td>
+                <td><%= l(day.started_at_before, format: :time) if day.started_at_before.present? %></td>
+                <td><%= l(day.finished_at_before, format: :time) if day.finished_at_before.present? %></td>
+                <td><%= l(day.started_at, format: :time) if day.started_at.present? %></td>
+                <td><%= l(day.finished_at, format: :time) if day.finished_at.present? %></td>
+                <td><%= day.confirmation_mark %></td>
+              <% end %>
+            </tr>
+          </tbody>
+        <% end %>
+      <% end %>
+    </table>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

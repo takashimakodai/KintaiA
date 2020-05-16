@@ -1,7 +1,9 @@
 class AttendancesController < ApplicationController
   before_action :set_user, only: [:edit_one_month, :update_one_month, :csv_output]
-  before_action :logged_in_user, only: [:update, :edit_one_month]
-  before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
+  before_action :logged_in_user, only: [:update, :edit_one_month, :update_one_month]
+  before_action :correct_user, only: [:update, :edit_one_month, :update_one_month]
+  before_action :admin_not_correct_user, only: :log_info
+  before_action :superior_or_correct_user, only: [:update, :edit_one_month, :update_one_month, :log_info]
   before_action :set_one_month, only: [:edit_one_month, :csv_output]
 
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
@@ -32,6 +34,7 @@ class AttendancesController < ApplicationController
   
   # csv出力
   def csv_output
+    @first_day = Date.current.beginning_of_month
     respond_to do |format|
       format.html
       format.csv do
@@ -40,7 +43,7 @@ class AttendancesController < ApplicationController
     end
   end
   
-  # 残業申請
+  # 残業申請登録
   def edit_overtime_info
     @attendance = current_user.attendances.find_by(worked_on: params[:date])
     @superior = User.where(superior: true).where.not(id: current_user)
@@ -49,22 +52,22 @@ class AttendancesController < ApplicationController
   # 残業申請のお知らせモーダル
   def news_overtime
     @user = User.joins(:attendances).group("users.id").where(attendances: {overtime_mark: current_user.name}).where(attendances: {mark_by_instructor: "申請中"})
-    @attendance = Attendance.where.not(overtime_at: nil)
+    @attendance = Attendance.where.not(overtime_at: nil).all.order("worked_on ASC")
   end
   
   # 勤怠変更申請モーダル
   def change_information
     @user = User.joins(:attendances).group("users.id").where(attendances: {confirmation_mark: current_user.name}).where(attendances: {mark_approval: "申請中"})
-    @attendance = Attendance.where.not(finished_at: nil)
+    @attendance = Attendance.where.not(finished_at: nil).all.order("worked_on ASC")
   end
   
   # 残業申請
   def request_overtime
     @attendance = Attendance.find(params[:id])
-      if @attendance.update_attributes(overtime_params)
-        flash[:success] = "残業申請しました。"
+      if @attendance.update_attributes(overtime_params) 
+        flash[:success] = "終了予定時間を申請しました。"
       else
-        flash[:danger] = "出社時間を入力して下さい。翌日扱いは時間の確認が必要です。"
+        flash[:danger] = "終了予定時間の申請に失敗しました。<br>指定勤務終了時間内での申請は無効です。"
       end
     redirect_to user_url(current_user)
   end
@@ -104,7 +107,7 @@ class AttendancesController < ApplicationController
   # 最終申請モーダル
   def approval_info
     @user = User.joins(:attendances).group("users.id").where(attendances: {finish_mark: current_user.name}).where(attendances: {mark_by_finish: "申請中"})
-    @attendance = Attendance.where.not(appl_month: nil)
+    @attendance = Attendance.where.not(appl_month: nil).all.order("worked_on ASC")
     @first_day = Date.current.beginning_of_month
   end
  
@@ -125,7 +128,8 @@ class AttendancesController < ApplicationController
   def reply_approval_info
     reply_approval_params.each do |id, item|
       attendance = Attendance.find(id)
-      if attendance.update_attributes(item) 
+      if item[:change_at] == "1" 
+        attendance.update_attributes(item) 
         flash[:success] = "変更チェックした申請を登録しました。申請中の場合は再登録が必要です。"
       end
     end
@@ -142,9 +146,9 @@ class AttendancesController < ApplicationController
     if params["worked_on(1i)"].present? && params["worked_on(2i)"].present?
       year_month = "#{params["worked_on(1i)"]}/#{params["worked_on(2i)"]}"
       @day = DateTime.parse(year_month) if year_month.present?
-      @attendances = @user.attendances.where(worked_on: @day.all_month)
+      @attendances = @user.attendances.where(worked_on: @day.all_month).all.order("worked_on ASC")
     else
-      @attendances = @user.attendances
+      @attendances = @user.attendances.all.order("worked_on ASC")
     end
   end
   
@@ -156,7 +160,7 @@ class AttendancesController < ApplicationController
         attendance.update_attributes!(item)
       end
     end
-    flash[:success] = "勤怠情報の変更申請をしました。"
+    flash[:success] = "勤怠情報の変更申請(削除含)をしました。入力がない場合はそのままです。"
     redirect_to user_url(date: params[:date])
   rescue ActiveRecord::RecordInvalid # トランザクションによるエラーの分岐です。
     flash[:danger] = "無効な入力データがあった為、すべての変更申請をキャンセルしました。"
@@ -172,7 +176,7 @@ class AttendancesController < ApplicationController
     end
     # 残業申請
     def overtime_params
-      params.require(:attendance).permit(:overtime_at, :next_day, :worked_contents, :overtime_mark, :mark_by_instructor)
+      params.require(:attendance).permit(:overtime_at, :overtime_next_day, :worked_contents, :overtime_mark, :mark_by_instructor)
     end
     # 残業承認
     def reply_overtime_params
@@ -188,13 +192,21 @@ class AttendancesController < ApplicationController
     end
     # 最終申請承認
     def reply_approval_params
-      params.require(:user).pmit(attendances: [:finish_mark, :mark_by_finish, :change_at, :appl_month])[:attendances]
+      params.require(:user).permit(attendances: [:finish_mark, :mark_by_finish, :change_at, :appl_month])[:attendances]
     end
     
-    # 管理権限者、または現在ログインしているユーザーを許可します。
-    def admin_or_correct_user
-      @user = User.find(params[:user_id]) if @user.blank?
-      unless current_user?(@user) || current_user.admin?
+    # 上長、または現在ログインしているユーザーを許可します。
+    def superior_or_correct_user
+      @user = User.find(params[:id]) if @user.blank?
+      unless current_user?(@user) || current_user.superior?
+        flash[:danger] = "編集権限がありません。"
+        redirect_to(root_url)
+      end  
+    end
+    
+    def admin_not_correct_user
+      @user = User.find(params[:id]) if @user.blank?
+      if current_user.admin?
         flash[:danger] = "編集権限がありません。"
         redirect_to(root_url)
       end  

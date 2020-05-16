@@ -9,7 +9,7 @@
     <div class="modal-body">
       <div class="row">
         <div class="col-md-12">
-        <%= form_with(model: @attendance, url: attendances_request_overtime_user_path(@attendance), local: true, method: :patch) do |f| %>
+  <%= form_with(model: @attendance, url: attendances_request_overtime_user_path(@attendance), local: true, method: :patch) do |f| %>
           <table class="table table-bordered table-striped table-condensed overwork-table">
             <thead class="overwork-table">
               <tr>
@@ -35,7 +35,7 @@
                   <% end %>
                 </td>
                 <td><%= f.time_field :overtime_at, class: "form-control" %></td>
-                <td><%= f.check_box :next_day, id: "remember-me" %></td>
+                <td><%= f.check_box :overtime_next_day, id: "remember-me" %></td>
                 <td><%= f.text_field :worked_contents, class: "form-control" %></td>
                 <td><%= f.collection_select(:overtime_mark, @superior, :name, :name, {prompt: false}, {class: "form-control"}) %></td>
                 <td><%= f.hidden_field :mark_by_instructor, value: "申請中" %></td>

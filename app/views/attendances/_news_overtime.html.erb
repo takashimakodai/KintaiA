@@ -42,11 +42,19 @@
                           </td>
                           <td><%= format_basic_info(overtime.overtime_at) %></td>
                           <td><%= format_basic_info(user.designated_work_end_time) %></td>
-                          <td><%= working_times(user.designated_work_end_time.floor_to(15.minutes), overtime.overtime_at.floor_to(15.minutes)) %></td>
+                          <td>
+                            <% if overtime.overtime_at.present? && overtime.overtime_next_day == false %>
+                              <% if today_times(user.designated_work_end_time.floor_to(15.minutes), overtime.overtime_at.floor_to(15.minutes)).to_i >= 0 %>
+                                <%= today_times(user.designated_work_end_time.floor_to(15.minutes), overtime.overtime_at.floor_to(15.minutes)) %>
+                              <% end %>
+                            <% elsif overtime.overtime_at.present? && overtime.overtime_next_day == true %>
+                              <%= tomorrow_times(user.designated_work_end_time.floor_to(15.minutes), overtime.overtime_at.floor_to(15.minutes)) %>
+                            <% end %>
+                          </td>
                           <td><%= overtime.worked_contents %></td>
                           <td><%= i.select :mark_by_instructor, Attendance.mark_by_instructors.keys.to_a,{}, class: "form-control" %></td>
                           <td><%= i.check_box :change_at, id: "remember-me" %></td>
-                          <td><%= link_to "確認", user_path(user.id), class: "btn btn-primary" %></td>
+                          <td><%= link_to "確認", user_path(user.id, date: overtime.worked_on.beginning_of_month), class: "btn btn-primary" %></td>
                         </tr>
                       </tbody>
                     <% end %>

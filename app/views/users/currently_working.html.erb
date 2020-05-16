@@ -10,7 +10,7 @@
     <% @attendance.each do |attendance| %>
       <% User.group("users.id").where(id: attendance.user_id).each do |user| %>
         <tbody>
-          <th class="col-xs-4 center"><%= user.uid %></th>
+          <th class="col-xs-4 center"><%= user.employee_number %></th>
           <th class="col-xs-8 center"><%= user.name %></th>
         </tbody>
       <% end %>
