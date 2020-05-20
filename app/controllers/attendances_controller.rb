@@ -1,9 +1,9 @@
 class AttendancesController < ApplicationController
   before_action :set_user, only: [:edit_one_month, :update_one_month, :csv_output]
   before_action :logged_in_user, only: [:update, :edit_one_month, :update_one_month]
-  before_action :correct_user, only: [:update, :edit_one_month, :update_one_month]
+  before_action :correct_user, only: [:edit_one_month, :update_one_month]
   before_action :admin_not_correct_user, only: :log_info
-  before_action :superior_or_correct_user, only: [:update, :edit_one_month, :update_one_month, :log_info]
+  before_action :superior_or_correct_user, only: [:edit_one_month, :update_one_month, :log_info]
   before_action :set_one_month, only: [:edit_one_month, :csv_output]
 
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"

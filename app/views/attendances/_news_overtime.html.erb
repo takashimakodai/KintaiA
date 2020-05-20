@@ -27,7 +27,7 @@
                 </thead>
                 <% @attendance.each do |overtime| %>
                   <%= f.fields_for "attendances[]", overtime do |i| %>
-                    <% if overtime.user_id == user.id && overtime.mark_by_instructor == "申請中" %>
+                    <% if overtime.user_id == user.id && overtime.mark_by_instructor == "申請中" && current_user.name == overtime.overtime_mark %>
                       <tbody>
                         <tr>
                           <td><%= l(overtime.worked_on, format: :short) %></td>

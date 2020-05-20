@@ -44,7 +44,7 @@
                 <tbody>
                   <% @attendance.each do |day| %>
                     <%= f.fields_for "attendances[]", day do |i| %>
-                      <% if day.user_id == user.id && day.mark_approval == "申請中" %> 
+                      <% if day.user_id == user.id && day.mark_approval == "申請中" && current_user.name == day.confirmation_mark %> 
                         <tr>
                           <td><%= l(day.worked_on, format: :short) %></td>
                           <td>

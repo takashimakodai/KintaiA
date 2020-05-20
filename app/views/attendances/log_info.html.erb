@@ -1,8 +1,8 @@
 <h1>勤怠ログ</h1>
 <div class="row">
   <div class="col-md-12">
-    <table class="table table-bordered table-striped table-condensed overwork-table">
-      <%= form_with url: attendances_log_info_user_path, method: :get, local: true do |f| %>
+    <%= form_with url: attendances_log_info_user_path, method: :get, local: true do |f| %>
+    　<table class="table table-bordered table-striped table-condensed overwork-table">
         <thead class="overwork-table">
           <tr>
             <% if @user.id == current_user.id %>
@@ -27,11 +27,10 @@
             <th>指示者</th>
           </tr>
         </thead>
-        
         <% @attendances.each do |day| %>
           <tbody>
             <tr>
-              <% if day.finished_at.present? && day.mark_approval != "申請中" %> 
+              <% if day.finished_at.present? && day.mark_approval == "承認" %> 
                 <td><%= l(day.worked_on, format: :defaults) %></td>
                 <td><%= l(day.started_at_before, format: :time) if day.started_at_before.present? %></td>
                 <td><%= l(day.finished_at_before, format: :time) if day.finished_at_before.present? %></td>
@@ -44,6 +43,7 @@
         <% end %>
       <% end %>
     </table>
+    <span>&#12959;承認済の表示であり申請中と否認は除く</span>
   </div>
 </div>
 

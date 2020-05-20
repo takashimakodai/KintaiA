@@ -20,9 +20,7 @@ class Attendance < ApplicationRecord
   end
 
   def started_at_is_invalid_without_a_finished_at
-    #unless Date.current == worked_on
-      errors.add(:finished_at, "が必要です") if finished_at.blank? && started_at.present?
-    #end
+    errors.add(:finished_at, "が必要です") if finished_at.blank? && started_at.present?
   end
   
   def started_at_than_finished_at_fast_if_invalid
@@ -83,11 +81,11 @@ class Attendance < ApplicationRecord
     errors.add(:overtime_at, "が必要です") if overtime_mark.present? && overtime_at.blank?
   end
   
-   # 残業承認にて変更チェックがない場合は無効
-   validate :change_at_is_invalid_without_mark_by_instructor
-   def change_at_is_invalid_without_mark_by_instructor 
-     errors.add(:overtime_at, "が必要です") if mark_by_instructor.present? && change_at == false
-   end
+  # 残業承認にて変更チェックがない場合は無効
+  validate :change_at_is_invalid_without_mark_by_instructor
+  def change_at_is_invalid_without_mark_by_instructor 
+    errors.add(:overtime_at, "が必要です") if mark_by_instructor.present? && change_at == false
+  end
   
   # 勤怠変更にて支持者確認がない場合は無効（出退勤有り）
   validate :confirmation_mark_is_invalid_without_started_at_and_finished_at_present
@@ -104,10 +102,7 @@ class Attendance < ApplicationRecord
       errors.add(:confirmation_mark, "が必要です") if started_at.blank? && finished_at.blank?
     end
   end
-  
-  # （当日）勤怠変更にて当日出社がある場合
-  
-  
+
   # 最終承認にて支持者確認が存在し、変更マークがない場合は無効
   validate :change_at_is_invalid_without_mark_by_finish_present
   def change_at_is_invalid_without_mark_by_finish_present
