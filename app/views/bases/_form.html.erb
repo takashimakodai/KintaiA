@@ -8,7 +8,7 @@
   <%= f.text_field :base_name, class: "form-control" %>
   
   <%= f.label :base_category, class: "label-base" %>
-  <%= f.text_field :base_category, class: "form-control" %>
+  <%= f.select :base_category, ["出勤", "退勤"], { include_blank: true }, { class: "form-control" } %>
   
   <%= f.submit yield(:button_text), class: "btn btn-block btn-primary btn-new-base" %>
 

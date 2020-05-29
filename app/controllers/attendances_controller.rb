@@ -2,7 +2,7 @@ class AttendancesController < ApplicationController
   before_action :set_user, only: [:edit_one_month, :update_one_month, :csv_output]
   before_action :logged_in_user, only: [:update, :edit_one_month, :update_one_month]
   before_action :correct_user, only: [:edit_one_month, :update_one_month]
-  before_action :admin_not_correct_user, only: :log_info
+  before_action :admin_not_correct_user, only: [:edit_one_month, :update_one_month, :log_info]
   before_action :superior_or_correct_user, only: [:edit_one_month, :update_one_month, :log_info]
   before_action :set_one_month, only: [:edit_one_month, :csv_output]
 
@@ -57,14 +57,15 @@ class AttendancesController < ApplicationController
   
   # 勤怠変更申請モーダル
   def change_information
-    @user = User.joins(:attendances).group("users.id").where(attendances: {confirmation_mark: current_user.name}).where(attendances: {mark_approval: "申請中"})
+    @user = User.joins(:attendances).group("users.id").where(attendances: {confirmation_mark: current_user.name, mark_approval: "申請中"})
     @attendance = Attendance.where.not(finished_at: nil).all.order("worked_on ASC")
   end
   
   # 残業申請
   def request_overtime
     @attendance = Attendance.find(params[:id])
-      if @attendance.update_attributes(overtime_params) 
+      if overtime_params[:overtime_mark].present? && overtime_params[:overtime_at].present?
+        @attendance.update_attributes(overtime_params) 
         flash[:success] = "終了予定時間を申請しました。"
       else
         flash[:danger] = "終了予定時間の申請に失敗しました。<br>指定勤務終了時間内での申請は無効です。"
@@ -76,7 +77,7 @@ class AttendancesController < ApplicationController
   def reply_overtime
     reply_overtime_params.each do |id, item|
       attendance = Attendance.find(id)
-      if item[:change_at] == "1"
+      if item[:change_at] == "1" 
         attendance.update_attributes(item)
         flash[:success] = "変更チェックした申請を登録しました。申請中の場合は再登録が必要です。"
       end
@@ -115,7 +116,9 @@ class AttendancesController < ApplicationController
   def request_approval_info
     approval_params.each do |id, item|
       attendance = Attendance.find(id)
-      if attendance.update_attributes(item)
+      if item[:finish_mark].present? 
+        
+        attendance.update_attributes(item)
         flash[:success] = "最終申請しました。"
       else
         flash[:danger] = "最終申請に失敗しました。"
@@ -131,6 +134,9 @@ class AttendancesController < ApplicationController
       if item[:change_at] == "1" 
         attendance.update_attributes(item) 
         flash[:success] = "変更チェックした申請を登録しました。申請中の場合は再登録が必要です。"
+      elsif item[:change_at] == "1" && item[:mark_by_instructor] == "なし"
+      attendance.update_attributes(overtime_at: nil, worked_contents: nil, overtime_mark: nil, mark_by_instructor: nil)
+      flash[:success] = "変更チェックした申請を登録しました。申請中の場合は再登録が必要です。"
       end
     end
     
@@ -180,11 +186,11 @@ class AttendancesController < ApplicationController
     end
     # 残業承認
     def reply_overtime_params
-      params.require(:user).permit(attendances: [:mark_by_instructor, :change_at])[:attendances]
+      params.require(:user).permit(attendances: [:overtime_at, :overtime_next_day, :worked_contents, :overtime_mark, :mark_by_instructor, :change_at])[:attendances]
     end
     # 勤怠変更承認
     def reply_change_params
-      params.require(:user).permit(attendances: [:mark_approval, :change_at])[:attendances]
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :note, :mark_approval, :change_at])[:attendances]
     end
     # 最終申請
     def approval_params

@@ -14,7 +14,7 @@
   <%= f.number_field :employee_number, class: "form-control" %>
   
   <%= f.label :uid, class: "label-#{yield(:class_text)}" %>
-  <%= f.number_field :uid, class: "form-control" %>
+  <%= f.text_field :uid, class: "form-control" %>
 
   <%= f.label :password, class: "label-#{yield(:class_text)}" %><span class="fast-form">&nbsp;&#9888;必須(非表示)</span>
   <%= f.password_field :password, class: "form-control" %>
@@ -22,7 +22,7 @@
   <%= f.label :password_confirmation, class: "label-#{yield(:class_text)}" %><span class="fast-form">&nbsp;&#9888;必須(非表示)</span>
   <%= f.password_field :password_confirmation, class: "form-control" %>
   
-  <%= f.label :basic_work_time, class: "label-#{yield(:class_text)}" %>
+  <%= f.label :basic_work_time, class: "label-#{yield(:class_text)}" %><span class="fast-form">&nbsp;&#9888;必須</span>
   <%= f.time_field :basic_work_time, class: "form-control" %>
   
   <%= f.label :designated_work_start_time, class: "label-#{yield(:class_text)}" %><span class="fast-form">&nbsp;&#9888;必須</span>

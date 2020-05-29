@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails',        '~> 5.2.4.2'
+gem 'rails',        '~> 5.2.4.3'
 gem 'rails-i18n' 
 gem 'bcrypt'
 gem 'faker'

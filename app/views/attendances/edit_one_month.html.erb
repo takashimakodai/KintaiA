@@ -50,14 +50,19 @@
                     <td><%= attendance.time_field :started_at, readonly: true, class: "form-control" %></td>
                     <td><%= attendance.time_field :finished_at, readonly: true, class: "form-control" %></td>
                   <% elsif Date.current == day.worked_on && day.finished_at_before.blank? %>
-                    <td><%= attendance.time_field :started_at, readonly: true, class: "form-control" %></td>
-                    <td><%= attendance.time_field :finished_at, readonly: true, class: "form-control" %></td>
+                    <td><%= attendance.time_field :started_at_before, readonly: true, class: "form-control" %></td>
+                    <td><%= attendance.time_field :finished_at_before, readonly: true, class: "form-control" %></td>
+                  <% elsif day.started_at_before.present? && day.started_at.blank? %>
+                    <td><%= attendance.time_select :started_at, { default: day.started_at_before }, { class: "form-control date-only-width" } %></td>
+                    <td><%= attendance.time_select :finished_at, { default: day.finished_at_before }, { class: "form-control date-only-width" } %></td>
                   <% else %>
                     <td><%= attendance.time_field :started_at, class: "form-control" %></td>
                     <td><%= attendance.time_field :finished_at, class: "form-control" %></td>
                   <% end %>
                 <td>
-                  <% if day.started_at.present? && day.finished_at.present? && day.next_day == true %>
+                  <% if day.started_at_before.present? && day.finished_at_before.present? && day.finished_at.blank? %>
+                    <%= working_times(day.started_at_before, day.finished_at_before) %>
+                  <% elsif day.started_at.present? && day.finished_at.present? && day.next_day == true %>
                     <%= working_nexttimes(day.started_at, day.finished_at) %>
                   <% elsif day.started_at.present? && day.finished_at.present? && day.next_day == false %>
                     <%= working_times(day.started_at, day.finished_at) %>

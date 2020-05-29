@@ -12,12 +12,18 @@ class UsersController < ApplicationController
   end
   
   def import
-    if params[:file].blank?
-      flash[:danger] = "インポートするCSVファイルを選択して下さい。"
-      redirect_to users_url
-    else
-      User.import(params[:file])
-      flash[:success] = "CSVファイルをインポートしました。"
+    if params[:file].present? && File.extname(params[:file].original_filename) == ".csv" 
+      begin
+        User.import(params[:file])
+        flash[:success] = "CSVファイルをインポートしました。"
+        redirect_to users_url
+      rescue
+        flash[:danger] = "CSVファイルのインポートに失敗しました。"
+      end
+    end
+    
+    if flash[:success].nil? 
+      flash[:danger] = "CSVファイルのインポートに失敗しました。"
       redirect_to users_url
     end
   end
@@ -27,15 +33,14 @@ class UsersController < ApplicationController
     @worked_sum = @attendances.where.not(started_at: nil).size
     all_attendance = Attendance.all
     # 残業申請上長件数
-    @overtime_acount = all_attendance.where(mark_by_instructor: "申請中").where(overtime_mark: "上長A").size
-    @overtime_bcount = all_attendance.where(mark_by_instructor: "申請中").where(overtime_mark: "上長B").size
+    @overtime_count = all_attendance.where(mark_by_instructor: "申請中", overtime_mark: current_user.name).size
+    @overtime_user = all_attendance.where(mark_by_instructor: "申請中", overtime_mark: current_user.name)
     # 勤怠変更申請件数
-    @confirmation_acount = all_attendance.where(mark_approval: "申請中").where(confirmation_mark: "上長A").size
-    @confirmation_bcount = all_attendance.where(mark_approval: "申請中").where(confirmation_mark: "上長B").size
+    @confirmation_count = all_attendance.where(mark_approval: "申請中", confirmation_mark: current_user.name).size
+    @confirmation_user = all_attendance.where(mark_approval: "申請中", confirmation_mark: current_user.name)
     # 最終申請上長確認と件数
-    @finish_acount = all_attendance.where(mark_by_finish: "申請中").where(finish_mark: "上長A").size
-    @finish_bcount = all_attendance.where(mark_by_finish: "申請中").where(finish_mark: "上長B").size
-    @approval_at = all_attendance.where(mark_by_finish: "申請中").size
+    @finish_count = all_attendance.where(mark_by_finish: "申請中", finish_mark: current_user.name).size
+    @finish_user = all_attendance.where(mark_by_finish: "申請中", finish_mark: current_user.name)
     # 上長確認
     @superior = User.where(superior: true).where.not(id: current_user)
     @current_superior = User.where(superior: true).where(id: current_user).find_by(params[:name])

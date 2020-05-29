@@ -1,9 +1,9 @@
 class Attendance < ApplicationRecord
   belongs_to :user
   
-  enum mark_by_instructor: { "申請中" => 1, "承認" => 2, "否認" => 3 }, _prefix: true      #上長overtime_mark残業承認
-  enum mark_approval: { "申請中" => 1, "承認" => 2, "否認" => 3 }, _prefix: true           #上長confirmation_mark勤怠変更承認
-  enum mark_by_finish: { "申請中" => 1, "承認" => 2, "否認" => 3 }, _prefix: true          #上長finish_mark最終承認
+  enum mark_by_instructor: { "なし" => 0, "申請中" => 1, "承認" => 2, "否認" => 3 }, _prefix: true      #上長overtime_mark残業承認
+  enum mark_approval: { "なし" => 0, "申請中" => 1, "承認" => 2, "否認" => 3 }, _prefix: true           #上長confirmation_mark勤怠変更承認
+  enum mark_by_finish: { "なし" => 0, "申請中" => 1, "承認" => 2, "否認" => 3 }, _prefix: true          #上長finish_mark最終承認
   
   validates :worked_on, presence: true 
   validates :note, length: { maximum: 50 }
@@ -29,6 +29,14 @@ class Attendance < ApplicationRecord
     end
   end
   
+  # 勤怠編集で出勤、退勤が存在する場合、備考が必要。
+  validate :note_is_without_started_at_and_finished_at
+  def note_is_without_started_at_and_finished_at
+    if started_at.present? && finished_at.present?
+      errors.add(:note, "が必要です") if note.blank?
+    end
+  end
+    
   # 勤怠編集で出勤、退勤ともに存在し上長マークがない場合
   validate :confirmation_mark_finished_at_without_started_at_both
   def confirmation_mark_finished_at_without_started_at_both 
