@@ -38,7 +38,7 @@
                 <td><%= f.check_box :overtime_next_day, id: "remember-me" %></td>
                 <td><%= f.text_field :worked_contents, class: "form-control" %></td>
                 <td><%= f.collection_select(:overtime_mark, @superior, :name, :name, {include_blank: true}, {class: "form-control"}) %></td>
-                <td><%= f.hidden_field :mark_by_instructor, value: "申請中" %></td>
+                    <%= f.hidden_field :mark_by_instructor, value: "申請中" %>
               </tr>
             </tbody>
             

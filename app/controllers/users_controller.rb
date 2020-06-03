@@ -30,7 +30,7 @@ class UsersController < ApplicationController
   
   def show
     @attendance = Attendance.find(params[:id])
-    @worked_sum = @attendances.where.not(started_at: nil).size
+    @worked_sum = @attendances.where(mark_approval: "承認").or(@attendances.where.not(started_at_before: nil)).size
     all_attendance = Attendance.all
     # 残業申請上長件数
     @overtime_count = all_attendance.where(mark_by_instructor: "申請中", overtime_mark: current_user.name).size

@@ -38,7 +38,7 @@
                   <% end %>
                 </td>
                 <td>
-                  <% if Date.current < day.worked_on %>
+                  <% if Date.current < day.worked_on || @user.id != current_user.id %>
                     <%= attendance.check_box :next_day, id: "remember_me", disabled: true %>
                   <% elsif Date.current == day.worked_on && day.finished_at_before.blank? %>
                     <%= attendance.check_box :next_day, id: "remember_me", disabled: true %>
@@ -46,7 +46,7 @@
                     <%= attendance.check_box :next_day, id: "remember_me" %>
                   <% end %>
                 </td>
-                  <% if Date.current < day.worked_on %>
+                  <% if Date.current < day.worked_on || @user.id != current_user.id %>
                     <td><%= attendance.time_field :started_at, readonly: true, class: "form-control" %></td>
                     <td><%= attendance.time_field :finished_at, readonly: true, class: "form-control" %></td>
                   <% elsif Date.current == day.worked_on && day.finished_at_before.blank? %>
@@ -60,16 +60,22 @@
                     <td><%= attendance.time_field :finished_at, class: "form-control" %></td>
                   <% end %>
                 <td>
-                  <% if day.started_at_before.present? && day.finished_at_before.present? && day.finished_at.blank? %>
-                    <%= working_times(day.started_at_before, day.finished_at_before) %>
-                  <% elsif day.started_at.present? && day.finished_at.present? && day.next_day == true %>
-                    <%= working_nexttimes(day.started_at, day.finished_at) %>
-                  <% elsif day.started_at.present? && day.finished_at.present? && day.next_day == false %>
-                    <%= working_times(day.started_at, day.finished_at) %>
+                  <% if day.finished_at_before.present? && day.finished_at.blank? %>
+                    <%= str_times = working_times(day.started_at_before.floor_to(15.minutes), day.finished_at_before.floor_to(15.minutes)) %>
+                  <% elsif day.finished_at_before.blank? && day.finished_at.present? && day.next_day == false %>
+                    <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+                  <% elsif day.finished_at_before.blank? && day.finished_at.present? && day.next_day == true %>
+                    <%= str_times = working_nexttimes(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+                  <% elsif day.finished_at_before.present? && day.finished_at.present? && day.next_day == false %>
+                    <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+                  <% elsif day.finished_at_before.present? && day.finished_at.present? && day.next_day == true %>
+                    <%= str_times = working_nexttimes(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+                  <% elsif day.finished_at_before.present? && day.finished_at.present? %>
+                    <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
                   <% end %>
                 </td>
                 <td>
-                  <% if Date.current < day.worked_on %>
+                  <% if Date.current < day.worked_on || @user.id != current_user.id %>
                     <%= attendance.text_field :note, readonly: true, class: "form-control" %>
                   <% elsif Date.current == day.worked_on && day.finished_at_before.blank? %>
                     <%= attendance.text_field :note, readonly: true, class: "form-control" %>
@@ -78,7 +84,7 @@
                   <% end %>  
                 </td>
                 <td>
-                  <% if Date.current < day.worked_on %>
+                  <% if Date.current < day.worked_on || @user.id != current_user.id %>
                     <%= attendance.collection_select(:confirmation_mark, @superior, :name, :name, {include_blank: true}, {disabled: true, class: "form-control"}) %>
                   <% elsif Date.current == day.worked_on && day.finished_at_before.blank? %>
                     <%= attendance.collection_select(:confirmation_mark, @superior, :name, :name, {include_blank: true}, {disabled: true, class: "form-control"}) %>  
@@ -95,8 +101,10 @@
       </table>
     </div>
     <div class="center">
-      <%= link_to "キャンセル", user_path(date: @first_day), class: "btn btn-lg btn-default" %>
-      <%= f.submit "編集を保存する", class: "btn btn-lg btn-primary" %>
+      <% if @user.id == current_user.id %>
+        <%= link_to "キャンセル", user_path(date: @first_day), class: "btn btn-lg btn-default" %>
+        <%= f.submit "編集を保存する", class: "btn btn-lg btn-primary" %>
+      <% end %>
     </div>
   <% end %>
 <% end %>

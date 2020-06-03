@@ -124,62 +124,82 @@
               <% end %>
             </td>
             <td>
-              <% if day.mark_approval == "承認" || day.mark_approval == "申請中" %>
+              <% if day.started_at_before.present? && day.started_at.blank? %>
+                <%= l(day.started_at_before, format: :hour) if day.started_at_before.present? %>
+              <% elsif day.started_at_before.present? && day.started_at.present? && day.mark_approval == "承認" %>
                 <%= l(day.started_at, format: :hour) if day.started_at.present? %>
-              <% elsif %>
-                <%= l(day.started_at_before, format: :hour) if day.started_at_before.present? && day.started_at.blank? %>
+              <% elsif day.started_at_before.blank? && day.started_at.present? && day.mark_approval == "承認" %>
+                <%= l(day.started_at, format: :hour) if day.started_at.present? %>
+              <% else %>
+                <%= l(day.started_at_before, format: :hour) if day.started_at_before.present? %>
               <% end %>
             </td>
             <td>
-              <% if day.mark_approval == "承認" || day.mark_approval == "申請中" %>
+              <% if day.started_at_before.present? && day.started_at.blank? %>
+                <%= l day.started_at_before.floor_to(15.minutes), format: :minutes if day.started_at_before.present? %>
+              <% elsif day.started_at_before.present? && day.started_at.present? && day.mark_approval == "承認" %>
                 <%= l day.started_at.floor_to(15.minutes), format: :minutes if day.started_at.present? %>
-              <% elsif %>
-                <%= l day.started_at_before.floor_to(15.minutes), format: :minutes if day.started_at_before.present? && day.started_at.blank? %>
+              <% elsif day.started_at_before.blank? && day.started_at.present? && day.mark_approval == "承認" %>
+                <%= l day.started_at.floor_to(15.minutes), format: :minutes if day.started_at.present? %>
+              <% else %>
+                <%= l day.started_at_before.floor_to(15.minutes), format: :minutes if day.started_at_before.present? %>
               <% end %>
             </td>
             <td>
               <% if btn_text = attendance_state(day) %>
-                <% unless @user.id != current_user.id %> 
+                <% if @user.id == current_user.id && day.started_at_before.blank? %>
                   <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-block btn-primary" %>
                 <% end %>
               <% end %>
             </td>
             <td>
-              <% if day.mark_approval == "承認" || day.mark_approval == "申請中" %>
+              <% if day.finished_at_before.present? && day.finished_at.blank? %>
+                <%= l(day.finished_at_before, format: :hour) if day.finished_at_before.present? %>
+              <% elsif day.finished_at_before.present? && day.finished_at.present? && day.mark_approval == "承認" %>
                 <%= l(day.finished_at, format: :hour) if day.finished_at.present? %>
-              <% elsif %>
-                <%= l(day.finished_at_before, format: :hour) if day.finished_at_before.present? && day.finished_at.blank? %>
+              <% elsif day.finished_at_before.blank? && day.finished_at.present? && day.mark_approval == "承認" %>
+                <%= l(day.finished_at, format: :hour) if day.finished_at.present? %>
+              <% else %>
+                <%= l(day.finished_at_before, format: :hour) if day.finished_at_before.present? %>
               <% end %>
             </td>
             <td>
-              <% if day.mark_approval == "承認" || day.mark_approval == "申請中" %>
+              <% if day.finished_at_before.present? && day.finished_at.blank? %>
+                <%= l day.finished_at_before.floor_to(15.minutes), format: :minutes if day.finished_at_before.present? %>
+              <% elsif day.finished_at_before.present? && day.finished_at.present? && day.mark_approval == "承認" %>
                 <%= l day.finished_at.floor_to(15.minutes), format: :minutes if day.finished_at.present? %>
-              <% elsif %>
-                <%= l day.finished_at_before.floor_to(15.minutes), format: :minutes if day.finished_at_before.present? && day.finished_at.blank? %>
+              <% elsif day.finished_at_before.blank? && day.finished_at.present? && day.mark_approval == "承認" %>
+                <%= l day.finished_at.floor_to(15.minutes), format: :minutes if day.finished_at.present? %>
+              <% else %>
+                <%= l day.finished_at_before.floor_to(15.minutes), format: :minutes if day.finished_at_before.present? %>
               <% end %>
             </td>
-            <td></td>
             <td>
-              <% if day.started_at_before.present? && day.finished_at_before.present? && day.started_at.blank? && day.finished_at.blank? %>
-                <%= str_times = working_times(day.started_at_before.floor_to(15.minutes), day.finished_at_before.floor_to(15.minutes)) %>
-              <% end %>
-              
-              <% if day.mark_approval == "承認" || day.mark_approval == "申請中" %>
-                <% if day.started_at.present? && day.finished_at.present? && day.next_day == false %>
-                  <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
-                  <%# @total_working_times = @total_working_times.to_f + str_times.to_f %>
-                <% elsif day.started_at.present? && day.finished_at.present? && day.next_day == true %>
-                  <%= str_times = working_nexttimes(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
-                <% elsif day.started_at_before.present? && day.finished_at_before.present? %>
-                  <%= str_times = working_times(day.started_at_before.floor_to(15.minutes), day.finished_at_before.floor_to(15.minutes)) %>
+              <% if btn_text = attendance_state(day) %>
+                <% if @user.id == current_user.id && day.started_at_before.present? %>
+                  <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-block btn-primary" %>
                 <% end %>
               <% end %>
             </td>
             <td>
-              <% if day.mark_approval == "承認" || day.mark_approval == "申請中" %>
-                <%= day.note %>
+              <% if day.finished_at_before.present? && day.finished_at.blank? %>
+                <%= str_times = working_times(day.started_at_before.floor_to(15.minutes), day.finished_at_before.floor_to(15.minutes)) %>
+              <% elsif day.finished_at_before.blank? && day.finished_at.present? && day.mark_approval == "承認" && day.next_day == false %>
+                <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+              <% elsif day.finished_at_before.blank? && day.finished_at.present? && day.mark_approval == "承認" && day.next_day == true %>
+                <%= str_times = working_nexttimes(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+              <% elsif day.finished_at_before.present? && day.finished_at.present? && day.mark_approval == "承認" && day.next_day.blank? %>
+                <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %> 
+              <% elsif day.finished_at_before.present? && day.finished_at.present? && day.mark_approval == "承認" && day.next_day == false %>
+                <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+              <% elsif day.finished_at_before.present? && day.finished_at.present? && day.mark_approval == "承認" && day.next_day == true %>
+                <%= str_times = working_nexttimes(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+              <% elsif day.finished_at_before.present? && day.finished_at.present? %>
+                <%= str_times = working_times(day.started_at_before.floor_to(15.minutes), day.finished_at_before.floor_to(15.minutes)) %>
               <% end %>
+              <%# @total_working_times = @total_working_times.to_f + str_times.to_f %>
             </td>
+            <td><%= day.note if day.mark_approval == "承認" %></td>
             <td>
               <% if day.mark_by_instructor == "承認" || day.mark_by_instructor == "申請中" %>
                 <%= l(day.overtime_at, format: :hour) if day.overtime_at.present? %>

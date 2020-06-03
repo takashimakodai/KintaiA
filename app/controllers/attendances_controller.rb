@@ -1,7 +1,7 @@
 class AttendancesController < ApplicationController
   before_action :set_user, only: [:edit_one_month, :update_one_month, :csv_output]
   before_action :logged_in_user, only: [:update, :edit_one_month, :update_one_month]
-  before_action :correct_user, only: [:edit_one_month, :update_one_month]
+  #before_action :correct_user, only: [:edit_one_month, :update_one_month]
   before_action :admin_not_correct_user, only: [:edit_one_month, :update_one_month, :log_info]
   before_action :superior_or_correct_user, only: [:edit_one_month, :update_one_month, :log_info]
   before_action :set_one_month, only: [:edit_one_month, :csv_output]
@@ -68,7 +68,7 @@ class AttendancesController < ApplicationController
         @attendance.update_attributes(overtime_params) 
         flash[:success] = "終了予定時間を申請しました。"
       else
-        flash[:danger] = "終了予定時間の申請に失敗しました。<br>指定勤務終了時間内での申請は無効です。"
+        flash[:danger] = "終了予定時間の申請に失敗しました。"
       end
     redirect_to user_url(current_user)
   end
@@ -117,7 +117,6 @@ class AttendancesController < ApplicationController
     approval_params.each do |id, item|
       attendance = Attendance.find(id)
       if item[:finish_mark].present? 
-        
         attendance.update_attributes(item)
         flash[:success] = "最終申請しました。"
       else
@@ -163,10 +162,12 @@ class AttendancesController < ApplicationController
     ActiveRecord::Base.transaction do # トランザクションを開始します。
       attendances_params.each do |id, item|
         attendance = Attendance.find(id)
-        attendance.update_attributes!(item)
+        if item[:confirmation_mark].present?
+          attendance.update_attributes!(item)
+        end
       end
     end
-    flash[:success] = "勤怠情報の変更申請(削除含)をしました。入力がない場合はそのままです。"
+    flash[:success] = "指示者指定のある勤怠変更のみ更新しました。"
     redirect_to user_url(date: params[:date])
   rescue ActiveRecord::RecordInvalid # トランザクションによるエラーの分岐です。
     flash[:danger] = "無効な入力データがあった為、すべての変更申請をキャンセルしました。"

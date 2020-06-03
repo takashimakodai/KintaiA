@@ -16,7 +16,7 @@ class Attendance < ApplicationRecord
   validate :started_at_than_finished_at_fast_if_invalid
   
   def finished_at_is_invalid_without_a_started_at
-    errors.add(:started_at, "が必要です") if started_at.blank? && finished_at.present?
+    errors.add(:started_at, "が必要です") if started_at.blank? && finished_at.present? 
   end
 
   def started_at_is_invalid_without_a_finished_at
@@ -30,31 +30,32 @@ class Attendance < ApplicationRecord
   end
   
   # 勤怠編集で出勤、退勤が存在する場合、備考が必要。
-  validate :note_is_without_started_at_and_finished_at
+  #validate :note_is_without_started_at_and_finished_at
   def note_is_without_started_at_and_finished_at
     if started_at.present? && finished_at.present?
       errors.add(:note, "が必要です") if note.blank?
     end
   end
-    
+      
+  
   # 勤怠編集で出勤、退勤ともに存在し上長マークがない場合
-  validate :confirmation_mark_finished_at_without_started_at_both
+  #validate :confirmation_mark_finished_at_without_started_at_both
   def confirmation_mark_finished_at_without_started_at_both 
     if started_at.present? && finished_at.present?
       errors.add(:confirmation_mark, "が必要です") if confirmation_mark.blank?
     end
   end
   
-  # 勤怠編集で備考が存在する中、出勤と退勤がない場合（上長マーク無）
-  validate :note_is_without_confirmation_mark_a_started_at_a_finished_at
-  def note_is_without_confirmation_mark_a_started_at_a_finished_at 
-    if note.present?
-      errors.add(:confirmation_mark, "3つ必要です") if started_at.blank? && finished_at.blank? && confirmation_mark.blank?
+  # 勤怠編集で上長マークがが存在する場合、出勤と退勤と備考が必要
+  validate :confirmation_mark_is_without_a_started_at_a_finished_at_a_note
+  def confirmation_mark_is_without_a_started_at_a_finished_at_a_note 
+    if confirmation_mark.present? && started_at.present? && finished_at.present?
+      errors.add(:confirmation_mark, "3つ必要です") if note.blank?
     end
   end
   
   # 勤怠編集で備考が存在する中、出勤と退勤がない場合（上長マーク有）
-  validate :note_is_without_a_started_at_a_finished_at
+  #validate :note_is_without_a_started_at_a_finished_at
   def note_is_without_a_started_at_a_finished_at 
     if note.present?
       errors.add(:confirmation_mark, "3つ必要です") if started_at.blank? && finished_at.blank? && confirmation_mark.present?
@@ -62,7 +63,7 @@ class Attendance < ApplicationRecord
   end
   
   # 勤怠編集で変更マークが存在する中、出勤と退勤がない場合（上長マーク無）
-  validate :next_day_is_without_confirmation_mark_a_started_at_a_finished_at
+  #validate :next_day_is_without_confirmation_mark_a_started_at_a_finished_at
   def next_day_is_without_confirmation_mark_a_started_at_a_finished_at 
     if next_day == true  
       errors.add(:confirmation_mark, "3つ必要です") if started_at.blank? && finished_at.blank? && confirmation_mark.blank?
@@ -96,7 +97,7 @@ class Attendance < ApplicationRecord
   end
   
   # 勤怠変更にて支持者確認がない場合は無効（出退勤有り）
-  validate :confirmation_mark_is_invalid_without_started_at_and_finished_at_present
+  #validate :confirmation_mark_is_invalid_without_started_at_and_finished_at_present
   def confirmation_mark_is_invalid_without_started_at_and_finished_at_present
     if confirmation_mark.blank? 
       errors.add(:mark_approval, "が必要です") if started_at.present? && finished_at.present?
@@ -104,7 +105,7 @@ class Attendance < ApplicationRecord
   end
   
   # 勤怠変更にて支持者確認がない場合は備考及び翌日は無効（出退勤無し）
-  validate :confirmation_mark_or_note_or_next_day_is_invalid_without_started_at_and_finished_at_blank
+  #validate :confirmation_mark_or_note_or_next_day_is_invalid_without_started_at_and_finished_at_blank
   def confirmation_mark_or_note_or_next_day_is_invalid_without_started_at_and_finished_at_blank 
     if confirmation_mark.present?
       errors.add(:confirmation_mark, "が必要です") if started_at.blank? && finished_at.blank?
