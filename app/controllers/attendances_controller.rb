@@ -64,12 +64,19 @@ class AttendancesController < ApplicationController
   # 残業申請
   def request_overtime
     @attendance = Attendance.find(params[:id])
-      if overtime_params[:overtime_mark].present? && overtime_params[:overtime_at].present?
-        @attendance.update_attributes(overtime_params) 
-        flash[:success] = "終了予定時間を申請しました。"
+    if overtime_params[:overtime_mark].present? && overtime_params[:overtime_at].present?
+      if @attendance.mark_by_instructor == "承認"
+        @attendance.update_attributes(overtime_params_none)
+        flash[:success] = "承認後の終了予定時間を申請しました。"
       else
-        flash[:danger] = "終了予定時間の申請に失敗しました。"
+        @attendance.update_attributes(overtime_params)
+        flash[:success] = "終了予定時間を申請しました。"
       end
+    end
+    
+    if flash[:success].blank?
+      flash[:danger] = "終了予定時間の申請に失敗しました。"
+    end
     redirect_to user_url(current_user)
   end
   
@@ -174,24 +181,31 @@ class AttendancesController < ApplicationController
     redirect_to attendances_edit_one_month_user_url(date: params[:date])
   end
 
-
   private
 
-    # 勤怠変更申請
+    # 勤怠変更申請（承認後のなしの表示対応含む）
     def attendances_params
-      params.require(:user).permit(attendances: [:started_at, :finished_at, :note, :confirmation_mark, :mark_approval, :next_day])[:attendances]
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :note, :note_none, :confirmation_mark, :mark_approval, :next_day, :change_started_at, :change_finished_at, :next_day_none])[:attendances]
     end
+      
     # 残業申請
     def overtime_params
       params.require(:attendance).permit(:overtime_at, :overtime_next_day, :worked_contents, :overtime_mark, :mark_by_instructor)
     end
+    
+    # 承認後の残業申請(承認後のなしの表示対応)
+    def overtime_params_none
+      params.require(:attendance).permit(:overtime_at, :overtime_next_day, :worked_contents, :overtime_mark, :mark_by_instructor, :overtime_at_none, :overtime_next_daynone, :worked_contents_none)
+    end
+    
     # 残業承認
     def reply_overtime_params
       params.require(:user).permit(attendances: [:overtime_at, :overtime_next_day, :worked_contents, :overtime_mark, :mark_by_instructor, :change_at])[:attendances]
     end
+    
     # 勤怠変更承認
     def reply_change_params
-      params.require(:user).permit(attendances: [:started_at, :finished_at, :note, :mark_approval, :change_at])[:attendances]
+      params.require(:user).permit(attendances: [:note, :note_none, :mark_approval, :change_at])[:attendances]
     end
     # 最終申請
     def approval_params

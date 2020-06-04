@@ -3,7 +3,7 @@
 <% if logged_in? && current_user.admin? %>
   <div class="center jumbotron">
     <h1>勤怠システム</h1>
-    <p>【管理者用画面】</p>
+    <p>【管理者画面】</p>
   </div>
 <% else %> 
   <div>
@@ -130,6 +130,12 @@
                 <%= l(day.started_at, format: :hour) if day.started_at.present? %>
               <% elsif day.started_at_before.blank? && day.started_at.present? && day.mark_approval == "承認" %>
                 <%= l(day.started_at, format: :hour) if day.started_at.present? %>
+              
+              <% elsif day.started_at_before.present? && day.started_at.present? && day.mark_approval == "なし" || day.mark_approval == "申請中" %>
+                <%= l(day.change_started_at, format: :hour) if day.change_started_at.present? %>
+              <% elsif day.started_at_before.blank? && day.started_at.present? && day.mark_approval == "なし" || day.mark_approval == "申請中" %>
+                <%= l(day.change_started_at, format: :hour) if day.change_started_at.present? %>
+              
               <% else %>
                 <%= l(day.started_at_before, format: :hour) if day.started_at_before.present? %>
               <% end %>
@@ -141,6 +147,12 @@
                 <%= l day.started_at.floor_to(15.minutes), format: :minutes if day.started_at.present? %>
               <% elsif day.started_at_before.blank? && day.started_at.present? && day.mark_approval == "承認" %>
                 <%= l day.started_at.floor_to(15.minutes), format: :minutes if day.started_at.present? %>
+              
+              <% elsif day.started_at_before.present? && day.started_at.present? && day.mark_approval == "なし" || day.mark_approval == "申請中" %>
+                <%= l day.change_started_at.floor_to(15.minutes), format: :minutes if day.change_started_at.present? %>
+              <% elsif day.started_at_before.blank? && day.started_at.present? && day.mark_approval == "なし" || day.mark_approval == "申請中" %>
+                <%= l day.change_started_at.floor_to(15.minutes), format: :minutes if day.change_started_at.present? %>
+              
               <% else %>
                 <%= l day.started_at_before.floor_to(15.minutes), format: :minutes if day.started_at_before.present? %>
               <% end %>
@@ -159,6 +171,12 @@
                 <%= l(day.finished_at, format: :hour) if day.finished_at.present? %>
               <% elsif day.finished_at_before.blank? && day.finished_at.present? && day.mark_approval == "承認" %>
                 <%= l(day.finished_at, format: :hour) if day.finished_at.present? %>
+             
+              <% elsif day.finished_at_before.present? && day.finished_at.present? && day.mark_approval == "なし" || day.mark_approval == "申請中" %>
+                <%= l(day.change_finished_at, format: :hour) if day.change_finished_at.present? %>
+              <% elsif day.finished_at_before.blank? && day.finished_at.present? && day.mark_approval == "なし" || day.mark_approval == "申請中" %>
+                <%= l(day.change_finished_at, format: :hour) if day.change_finished_at.present? %>
+  
               <% else %>
                 <%= l(day.finished_at_before, format: :hour) if day.finished_at_before.present? %>
               <% end %>
@@ -170,6 +188,12 @@
                 <%= l day.finished_at.floor_to(15.minutes), format: :minutes if day.finished_at.present? %>
               <% elsif day.finished_at_before.blank? && day.finished_at.present? && day.mark_approval == "承認" %>
                 <%= l day.finished_at.floor_to(15.minutes), format: :minutes if day.finished_at.present? %>
+              
+              <% elsif day.finished_at_before.present? && day.finished_at.present? && day.mark_approval == "なし" || day.mark_approval == "申請中" %>
+                <%= l day.change_finished_at.floor_to(15.minutes), format: :minutes if day.change_finished_at.present? %>
+              <% elsif day.finished_at_before.blank? && day.finished_at.present? && day.mark_approval == "なし" || day.mark_approval == "申請中" %>
+                <%= l day.change_finished_at.floor_to(15.minutes), format: :minutes if day.change_finished_at.present? %>
+              
               <% else %>
                 <%= l day.finished_at_before.floor_to(15.minutes), format: :minutes if day.finished_at_before.present? %>
               <% end %>
@@ -188,30 +212,57 @@
                 <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
               <% elsif day.finished_at_before.blank? && day.finished_at.present? && day.mark_approval == "承認" && day.next_day == true %>
                 <%= str_times = working_nexttimes(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+              
               <% elsif day.finished_at_before.present? && day.finished_at.present? && day.mark_approval == "承認" && day.next_day.blank? %>
                 <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %> 
               <% elsif day.finished_at_before.present? && day.finished_at.present? && day.mark_approval == "承認" && day.next_day == false %>
                 <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
               <% elsif day.finished_at_before.present? && day.finished_at.present? && day.mark_approval == "承認" && day.next_day == true %>
                 <%= str_times = working_nexttimes(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
-              <% elsif day.finished_at_before.present? && day.finished_at.present? %>
-                <%= str_times = working_times(day.started_at_before.floor_to(15.minutes), day.finished_at_before.floor_to(15.minutes)) %>
+              
+              <% elsif day.change_started_at.present? && day.change_finished_at.present? && day.next_day_none.blank? && day.mark_approval == "なし" %>
+                <%= str_times = working_times(day.change_started_at.floor_to(15.minutes), day.change_finished_at.floor_to(15.minutes)) %>
+              <% elsif day.change_started_at.present? && day.change_finished_at.present? && day.next_day_none == false && day.mark_approval == "なし" %>
+                <%= str_times = working_times(day.change_started_at.floor_to(15.minutes), day.change_finished_at.floor_to(15.minutes)) %>
+              <% elsif day.change_started_at.present? && day.change_finished_at.present? && day.next_day_none == true && day.mark_approval == "なし" %>
+                <%= str_times = working_nexttimes(day.change_started_at.floor_to(15.minutes), day.change_finished_at.floor_to(15.minutes)) %>
+              
+              <% elsif day.change_started_at.present? && day.change_finished_at.present? && day.next_day_none.blank? && day.mark_approval == "申請中" %>
+                <%= str_times = working_times(day.change_started_at.floor_to(15.minutes), day.change_finished_at.floor_to(15.minutes)) %>
+              <% elsif day.change_started_at.present? && day.change_finished_at.present? && day.next_day_none == false && day.mark_approval == "申請中" %>
+                <%= str_times = working_times(day.change_started_at.floor_to(15.minutes), day.change_finished_at.floor_to(15.minutes)) %>
+              <% elsif day.change_started_at.present? && day.change_finished_at.present? && day.next_day_none == true && day.mark_approval == "申請中" %>
+                <%= str_times = working_nexttimes(day.change_started_at.floor_to(15.minutes), day.change_finished_at.floor_to(15.minutes)) %>
+              <%# else %>
+                <%#= str_times = working_times(day.started_at_before.floor_to(15.minutes), day.finished_at_before.floor_to(15.minutes)) %>
               <% end %>
               <%# @total_working_times = @total_working_times.to_f + str_times.to_f %>
             </td>
-            <td><%= day.note if day.mark_approval == "承認" %></td>
             <td>
-              <% if day.mark_by_instructor == "承認" || day.mark_by_instructor == "申請中" %>
+              <% if day.mark_approval == "承認" %>
+                <%= day.note %>
+              <% elsif day.change_finished_at.present? && day.mark_approval == "申請中" %>
+                <%= day.note_none %>
+              <% elsif day.change_finished_at.present? && day.mark_approval == "なし" %>
+              　<%= day.note_none %>
+              <% end %>
+            </td>
+            <td>
+              <% if day.mark_by_instructor == "承認" %>
                 <%= l(day.overtime_at, format: :hour) if day.overtime_at.present? %>
+              <% elsif day.mark_by_instructor == "なし" || day.mark_by_instructor == "申請中" %>
+                <%= l(day.overtime_at_none, format: :hour) if day.overtime_at_none.present? %>
               <% end %>
             </td>
             <td>
-              <% if day.mark_by_instructor == "承認" || day.mark_by_instructor == "申請中" %>
+              <% if day.mark_by_instructor == "承認" %>
                 <%= l day.overtime_at.floor_to(15.minutes), format: :minutes if day.overtime_at.present? %>
+              <% elsif day.mark_by_instructor == "なし" || day.mark_by_instructor == "申請中" %>
+                <%= l day.overtime_at_none.floor_to(15.minutes), format: :minutes if day.overtime_at_none.present? %>
               <% end %>
             </td>
             <td>
-              <% if day.mark_by_instructor == "承認" || day.mark_by_instructor == "申請中" %>
+              <% if day.mark_by_instructor == "承認" %>
                 <% if day.overtime_at.present? && day.overtime_next_day == false %> 
                   <% if today_times(@user.designated_work_end_time.floor_to(15.minutes), day.overtime_at.floor_to(15.minutes)).to_i >= 0 %>
                     <%= today_times(@user.designated_work_end_time.floor_to(15.minutes), day.overtime_at.floor_to(15.minutes)) %>
@@ -220,10 +271,22 @@
                   <%= tomorrow_times(@user.designated_work_end_time.floor_to(15.minutes), day.overtime_at.floor_to(15.minutes)) %>
                 <% end %>
               <% end %>
+                
+              <% if day.mark_by_instructor == "なし" || day.mark_by_instructor == "申請中" %>
+                <% if day.overtime_at_none.present? && day.overtime_next_daynone == false %>
+                  <%= today_times(@user.designated_work_end_time.floor_to(15.minutes), day.overtime_at_none.floor_to(15.minutes)) %>
+                <% elsif day.overtime_at_none.present? && day.overtime_next_daynone == true %>
+                  <%= tomorrow_times(@user.designated_work_end_time.floor_to(15.minutes), day.overtime_at_none.floor_to(15.minutes)) %>
+                <% end %>
+              <% end %>
             </td>
             <td>
-              <% if day.mark_by_instructor == "承認" || day.mark_by_instructor == "申請中" %>
+              <% if day.mark_by_instructor == "承認" %>
                 <%= day.worked_contents %>
+              <% elsif day.overtime_at_none.present? && day.mark_by_instructor == "申請中" %>
+                <%= day.worked_contents_none %>
+              <% elsif day.overtime_at_none.present? && day.mark_by_instructor == "なし" %>
+                <%= day.worked_contents_none %>
               <% end %>
             </td>
             <td>

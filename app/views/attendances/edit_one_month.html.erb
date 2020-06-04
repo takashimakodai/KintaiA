@@ -92,7 +92,13 @@
                     <%= attendance.collection_select(:confirmation_mark, @superior, :name, :name, {include_blank: true}, {class: "form-control"}) %>
                   <% end %>
                   <%= attendance.hidden_field :mark_approval, value: "申請中" %>
-                  <%#= attendance.hidden_field :overtime_next_day, value: false %>
+                  <% if day.mark_approval == "承認" %>
+                    <%= attendance.hidden_field :change_started_at, value: day.started_at %>
+                    <%= attendance.hidden_field :change_finished_at, value: day.finished_at %>
+                    <%= attendance.hidden_field :next_day_none, value: day.next_day %>
+                    <%= attendance.hidden_field :note_none, value: day.note %>
+                  <% end %>
+                  
                 </td>
               </tr>
             <% end %>

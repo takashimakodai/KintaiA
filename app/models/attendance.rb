@@ -63,7 +63,7 @@ class Attendance < ApplicationRecord
   end
   
   # 勤怠編集で変更マークが存在する中、出勤と退勤がない場合（上長マーク無）
-  #validate :next_day_is_without_confirmation_mark_a_started_at_a_finished_at
+  validate :next_day_is_without_confirmation_mark_a_started_at_a_finished_at
   def next_day_is_without_confirmation_mark_a_started_at_a_finished_at 
     if next_day == true  
       errors.add(:confirmation_mark, "3つ必要です") if started_at.blank? && finished_at.blank? && confirmation_mark.blank?
@@ -71,7 +71,7 @@ class Attendance < ApplicationRecord
   end
   
   # 残業申請で指定勤務時間よりも早い残業時間は無効(チェック無)
-  validate :overtime_at_is_invalid_without_fast_a_designated_work_end_time
+  # validate :overtime_at_is_invalid_without_fast_a_designated_work_end_time
   def overtime_at_is_invalid_without_fast_a_designated_work_end_time
     if overtime_at.present? && overtime_next_day.blank?
       errors.add(:overtime_at, "が必要です") if user.designated_work_end_time.strftime("%H:%M").to_i > overtime_at.strftime("%H:%M").to_i
