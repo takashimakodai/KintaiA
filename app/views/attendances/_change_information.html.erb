@@ -69,7 +69,7 @@
                           <td><%= day.note %></td>
                           <td><%= i.select :mark_approval, Attendance.mark_approvals.keys.to_a, {}, class: "form-control" %></td>
                           <td><%= i.check_box :change_at, id: "remember_me" %></td>
-                          <td><%= link_to "確認", attendances_edit_one_month_user_path(user.id, date: day.worked_on.beginning_of_month), class: "btn btn-primary" %> </td>
+                          <td><%= link_to "確認", user_path(user.id, date: day.worked_on.beginning_of_month), class: "btn btn-primary" %> </td>
                         </tr>       
                       <% end %>
                     <% end %>

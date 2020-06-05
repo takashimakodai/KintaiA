@@ -13,7 +13,7 @@
   <p>Example</p>
   <table class="table table-condensed" id="table-users">
     <% @users.each do |user| %>
-      <% if user.id != 1 %>
+      <% if user.id != current_user.id %>
         <tbody>
           <tr>
             <td>
